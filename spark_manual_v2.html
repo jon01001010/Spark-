@@ -1,0 +1,2840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Spark Manual — v2.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#080808;color:#00ff41;font-family:Share Tech Mono,Courier New,monospace;font-size:14px;line-height:1.7;}
+#toc{position:fixed;top:0;left:0;width:220px;height:100vh;overflow-y:auto;background:#0c0c0c;border-right:1px solid #00ff4133;padding:16px 0;z-index:100;}
+#toc h2{font-size:11px;color:#00ff4166;padding:0 16px 8px;letter-spacing:2px;}
+#toc a{display:block;padding:4px 16px;font-size:12px;color:#00ff4188;text-decoration:none;border-left:2px solid transparent;}
+#toc a:hover{color:#00ff41;border-left-color:#00ff41;background:#00ff4108;}
+#toc a.active{color:#00ff41;border-left-color:#00ff41;}
+#toc .sec{padding:6px 16px 2px;font-size:10px;color:#00ff4144;letter-spacing:1px;margin-top:4px;}
+main{margin-left:220px;padding:40px 48px;max-width:900px;}
+h1{font-size:22px;color:#00ff41;border-bottom:1px solid #00ff4133;padding-bottom:16px;margin-bottom:32px;letter-spacing:2px;}
+h2{font-size:15px;color:#00ff41;margin:40px 0 14px;padding-top:16px;letter-spacing:1px;}
+h2.pkg{color:#00ff41;border-left:3px solid #00ff41;padding-left:12px;font-size:17px;margin-top:48px;}
+h3{font-size:13px;color:#00ff4199;margin:20px 0 8px;letter-spacing:1px;}
+p{margin-bottom:12px;color:#ccffcc;}
+pre{background:#0c0c0c;border:1px solid #00ff4122;padding:16px;overflow-x:auto;margin:12px 0 20px;font-size:12px;line-height:1.6;border-radius:2px;}
+code{background:#0c0c0c;padding:1px 5px;font-size:12px;border:1px solid #00ff4118;}
+.badge{display:inline-block;padding:1px 7px;font-size:10px;border:1px solid currentColor;margin-left:8px;vertical-align:middle;letter-spacing:1px;}
+.frozen{color:#ff4444;border-color:#ff4444;}
+.hidden{color:#4488ff;border-color:#4488ff;}
+table{width:100%;border-collapse:collapse;margin:10px 0 18px;}
+th{text-align:left;padding:5px 10px;font-size:11px;color:#00ff4166;border-bottom:1px solid #00ff4122;letter-spacing:1px;}
+td{padding:5px 10px;font-size:12px;border-bottom:1px solid #00ff410a;color:#ccffcc;}
+td:first-child{color:#00ff41;white-space:nowrap;}
+.mission{background:#0c0c0c;border:1px solid #00ff4133;padding:18px 24px;margin:20px 0;font-size:15px;text-align:center;letter-spacing:2px;}
+hr{border:none;border-top:1px solid #00ff4111;margin:28px 0;}
+.note{background:#00ff410a;border-left:3px solid #00ff4133;padding:8px 14px;margin:10px 0;font-size:12px;color:#00ff4199;}
+@media(max-width:700px){#toc{display:none;}main{margin-left:0;padding:20px 16px;}}
+</style>
+</head>
+<body>
+
+<nav id="toc">
+  <h2>CONTENTS</h2>
+  <div class="sec">LANGUAGE</div>
+  <a href="#intro">Introduction</a>
+  <a href="#lines">Line Format</a>
+  <a href="#variables">Variables</a>
+  <a href="#keywords">Keywords</a>
+  <a href="#flow">Control Flow</a>
+  <a href="#windows">Windows</a>
+  <a href="#locals">Local Variables</a>
+  <a href="#pkgs">Packages</a>
+  <div class="sec">GRAPHICS</div>
+  <a href="#graph">GRAPH</a>
+  <a href="#sprite">SPRITE</a>
+  <a href="#image">IMAGE</a>
+  <a href="#threed">THREED</a>
+  <a href="#raycast">RAYCAST</a>
+  <div class="sec">GAME</div>
+  <a href="#touch">TOUCH</a>
+  <a href="#move2d">MOVE2D</a>
+  <a href="#entity">ENTITY</a>
+  <a href="#scene">SCENE</a>
+  <a href="#hud">HUD</a>
+  <a href="#fullscr-pkg">FULLSCR</a>
+  <div class="sec">UI</div>
+  <a href="#ui">UI</a>
+  <a href="#input">INPUT</a>
+  <a href="#sheet">SHEET</a> &nbsp;·&nbsp; <a href="#sheet-new">SHEET v1.1</a> &nbsp;·&nbsp; <a href="#bootstrap">BOOTSTRAP INTERPRETER</a> &nbsp;·&nbsp; <a href="#compiler">BOOTSTRAP COMPILER</a>
+  <a href="#fullscr">FULLSCR</a>
+  <a href="#dom">DOM</a>
+  <a href="#template">TEMPLATE</a>
+  <div class="sec">AUDIO</div>
+  <a href="#sound">SOUND</a>
+  <a href="#audio-pkg">AUDIO (MP3)</a>
+  <a href="#spatial">SPATIAL</a>
+  <div class="sec">DATA</div>
+  <a href="#math">MATH</a>
+  <a href="#string">STRING</a>
+  <a href="#convert">CONVERT</a>
+  <a href="#array">ARRAY</a>
+  <a href="#store">STORE</a>
+  <a href="#time">TIME</a>
+  <a href="#timer">TIMER</a>
+  <a href="#compress">COMPRESS</a>
+  <a href="#fetch">FETCH</a>
+  <a href="#file">FILE</a>
+  <div class="sec">SYSTEM</div>
+  <a href="#wakelock">WAKELOCK</a>
+  <a href="#update">UPDATE</a>
+  <a href="#sys">SYS</a>
+  <a href="#ai">AI</a>
+  <a href="#worker">WORKER</a>
+  <a href="#launch-pkg">LAUNCH</a>
+  <a href="#multi">MULTI (PeerJS)</a>
+  
+  <div class="sec">NEW PACKAGES</div>
+  <a href="#regex">REGEX</a>
+  <a href="#json">JSON</a>
+  <a href="#crypto">CRYPTO</a>
+  <a href="#clipboard">CLIPBOARD</a>
+  <a href="#midi">MIDI</a>
+  <a href="#socket">SOCKET</a>
+  <a href="#matrix">MATRIX</a>
+  <a href="#date">DATE</a>
+  <a href="#color">COLOR</a>
+  <a href="#camera">CAMERA</a>
+  <a href="#geoloc">GEOLOC</a>
+  <a href="#notify">NOTIFY</a>
+  <a href="#history">HISTORY</a>
+    <a href="#spark">EVAL/COMPILE-Spark</a>
+  <a href="#emul">EMUL</a>
+  <div class="sec">HARDWARE</div>
+  <a href="#emul">EMUL</a>
+  <a href="#serial">SERIAL</a>
+  <div class="sec">PROCEDURAL</div>
+  <a href="#dstruct">DSTRUCT</a>
+  <a href="#phys">PHYS</a>
+  <a href="#tween">TWEEN</a>
+  <a href="#part">PART</a>
+  <a href="#path">PATH</a>
+  <a href="#ginput">GINPUT</a>
+  <a href="#proc">PROC</a>
+  <a href="#anim">ANIM</a>
+  <a href="#curve">CURVE</a>
+  <a href="#cloud">CLOUD</a>
+  <a href="#perf">PERF</a>
+  <a href="#vibrate">VIBRATE</a>
+  <a href="#speech">SPEECH</a>
+  <a href="#orient">ORIENT</a>
+  <a href="#chart">CHART</a>
+  <div class="sec">MORE</div>
+  <a href="#user-pkgs">User Packages</a>
+  <a href="#pwa">Installing Spark</a>
+  <a href="#export">Export</a>
+  <a href="#philosophy">Philosophy</a>
+  <a href="#example">Full Example</a>
+  <a href="#index">Function Index</a>
+  <div class="sec">ADVANCED</div>
+  <a href="#gotchas">Gotchas</a>
+  <a href="#bootstrap">Bootstrap / Self-Hosting</a>
+</nav>
+
+<main>
+
+<h1 id="intro">SPARK MANUAL <span class="badge" style="color:#00ff4166;border-color:#00ff4133;font-size:12px;">v2.0</span></h1>
+<div class="mission">Write once. Run anywhere. Own your tools.</div>
+<p>Spark is a mobile-first language that compiles to standalone HTML. Write once, share a file, runs anywhere. No server, no install, no build step.</p>
+<p>Keywords are short (5 chars max) — easier to type on a phone. Programs split into named Windows (like scenes or classes). MAIN is always the entry point.</p>
+<div class="note"><strong>Design rule:</strong> Spark source code never uses parentheses, brackets, or braces. Everything is keyword + space-delimited arguments. Simple to type, impossible to get wrong.</div>
+
+<hr>
+<h2 id="lines">LINE FORMAT</h2>
+<p>Every line starts with a number. Numbers determine execution order, not physical position.</p>
+<pre>10 asign SCORE = 0
+20 asign LIVES = 3
+30 goto 100
+100 print SCORE</pre>
+<p>Space in increments of 10 so you can insert lines later. Reference lines in another window with NUM-WINNAME:</p>
+<pre>30 goto 10-GAMEOVER     rem jump to line 10 in GAMEOVER window
+40 calsb 100-ENEMY      rem call sub at line 100 in ENEMY window</pre>
+
+<hr>
+<h2 id="variables">VARIABLES</h2>
+<p>Variables always have a window suffix. Inside the current window the suffix is inferred automatically.</p>
+<pre>10 asign SCORE = 0         rem SCORE-MAIN in MAIN window
+20 asign HP-ENEMY = 100    rem explicit cross-window variable
+30 print SCORE             rem reads SCORE-MAIN
+40 print HP-ENEMY          rem reads from ENEMY window</pre>
+<p>Variables hold numbers or strings. Math on numeric strings works. String concatenation uses <code>+</code>. Strings can be compared in IF conditions with <code>=</code> and <code>&lt;&gt;</code>.</p>
+<pre>10 asign X = "5"
+20 asign Y = X + 3         rem Y = 8
+
+10 asign NAME = "DOOM"
+20 asign VER = 1
+30 print NAME + " v" + VER    rem prints: DOOM v1
+
+10 IF NAME = "JON" THEN PRINT "welcome"
+20 IF STATUS &lt;&gt; "done" THEN GOTO 10</pre>
+
+<hr>
+<h2 id="keywords">KEYWORDS</h2>
+<table>
+<tr><th>KEYWORD</th><th>USAGE</th></tr>
+<tr><td>REM</td><td>Comment: <code>rem this is ignored</code></td></tr>
+<tr><td>ASIGN</td><td>Assign: <code>asign X = X + 1</code></td></tr>
+<tr><td>PRINT</td><td>Print to output: <code>print "score: " + SCORE</code></td></tr>
+<tr><td>GOTO</td><td>Jump: <code>goto 50</code></td></tr>
+<tr><td>CALSB</td><td>Call subroutine: <code>calsb 100</code> or <code>calsb FIRE-GUN</code></td></tr>
+<tr><td>RTURN</td><td>Return from subroutine</td></tr>
+<tr><td>GOWIN</td><td>Switch window: <code>gowin GAMEOVER</code></td></tr>
+<tr><td>IF / THEN</td><td>Conditional: <code>if HP &lt; 1 then calsb DEAD</code></td></tr>
+<tr><td>ELSE</td><td>Alternate branch: <code>if X &gt; 5 then print "big" else print "small"</code></td></tr>
+<tr><td>STRLP</td><td>For loop: <code>strlp I = 1 to 10</code></td></tr>
+<tr><td>NDLP</td><td>End for loop</td></tr>
+<tr><td>STEP</td><td>Loop increment: <code>strlp I = 0 to 360 step 45</code></td></tr>
+<tr><td>BREAK</td><td>Exit loop early</td></tr>
+<tr><td>WAIT</td><td>Pause milliseconds: <code>wait 16</code></td></tr>
+<tr><td>SYNC</td><td>Flip buffer + wait for next frame (60fps game loop)</td></tr>
+<tr><td>IMPRT</td><td>Import package: <code>imprt GRAPH</code></td></tr>
+<tr><td>END</td><td>Stop program</td></tr>
+<tr><td>LOCAL</td><td>Declare local variables in sub: <code>local X, Y, Z</code></td></tr>
+<tr><td>ONERR</td><td>Wrap CALSB calls in try/catch — errors go to _sparkERR</td></tr>
+<tr><td>AND / OR / NOT</td><td>Logical operators in IF: <code>if X &gt; 0 and X &lt; W then ...</code></td></tr>
+<tr><td>MOD</td><td>Modulo in expressions: <code>asign R = X MOD 3</code></td></tr>
+</table>
+
+<hr>
+<h2 id="flow">CONTROL FLOW</h2>
+<h3>IF / THEN / ELSE</h3>
+<pre>10 IF HP &lt; 1 THEN CALSB DEAD
+20 IF X &gt; W-GRAPH AND Y &gt; H-GRAPH THEN PRINT "out of bounds"
+30 IF SCORE &gt; 100 OR LIVES = 0 THEN ASIGN DONE = 1
+40 IF HP &gt; 0 THEN PRINT "alive" ELSE PRINT "dead"
+50 IF X &lt; 0 THEN GOTO 100 ELSE ASIGN X = X + 1</pre>
+<div class="note">Supports <code>AND</code>, <code>OR</code>, <code>NOT</code> in conditions. Also <code>&lt;&gt;</code> for not-equal. ELSE is optional — provides an alternate branch on the same line.</div>
+
+<h3>MOD Operator</h3>
+<p>Modulo (remainder) can be used directly in expressions:</p>
+<pre>10 ASIGN R = X MOD 3
+20 IF COUNT MOD 10 = 0 THEN PRINT "milestone"</pre>
+<h3>WHILE / ENDWH <span class="badge frozen">REMOVED</span></h3>
+<p>WHILE/ENDWH has been removed from the language. Use GOTO for backward loops or STRLP/NDLP for counted loops instead.</p>
+
+<h3>Colon Chaining</h3>
+<p>Multiple statements on one line, separated by <code> : </code> (space-colon-space):</p>
+<pre>10 ASIGN X = 0 : ASIGN Y = 0 : ASIGN VX = 4
+20 CALSB CLEAR-GRAPH : CALSB COLOR-GRAPH : CALSB CIRC-GRAPH</pre>
+<div class="note">Each chained statement is expanded to its own line internally. All keywords except STRLP/NDLP work in chains.</div>
+<h3>STRLP / NDLP (for loop)</h3>
+<pre>10 strlp I = 1 to 8
+20   strlp J = 1 to 8
+30     rem draw grid at I,J
+40   ndlp
+50 ndlp
+
+rem with step:
+10 strlp X = 0 to W-GRAPH step 40
+20   rem draw vertical line every 40px
+30 ndlp</pre>
+<h3>GOTO game loop</h3>
+<pre>80 wait 16
+90 calsb TICK-MAIN
+100 goto 80             rem loops forever</pre>
+<h3>CALSB</h3>
+<pre>10 calsb 200            rem jump to 200, return after rturn
+20 calsb SQRT-MATH      rem call package function
+200 asign Y = Y + 1
+210 rturn</pre>
+
+<hr>
+<h3>Expression Functions</h3>
+<p>Inline functions usable anywhere in ASIGN, IF, or PRINT expressions. Arguments are space-delimited — Spark uses no parentheses, brackets, or braces anywhere in source code:</p>
+<table>
+<tr><th>FUNCTION</th><th>DESCRIPTION</th><th>EXAMPLE</th></tr>
+<tr><td>MID str start len</td><td>Substring</td><td>ASIGN X = MID NAME 0 3</td></tr>
+<tr><td>CHAR str pos</td><td>Character at position</td><td>ASIGN C = CHAR NAME 0</td></tr>
+<tr><td>STRLEN str</td><td>String length</td><td>IF STRLEN NAME > 10 THEN ...</td></tr>
+<tr><td>INDEXOF str find</td><td>Position of substring (-1 if not found)</td><td>ASIGN P = INDEXOF NAME "ar"</td></tr>
+<tr><td>ARR var index</td><td>Array element access</td><td>ASIGN V = ARR ARR-ARRAY 3</td></tr>
+<tr><td>INT x</td><td>Floor to integer</td><td>ASIGN I = INT 3.7</td></tr>
+<tr><td>ABS x</td><td>Absolute value</td><td>ASIGN D = ABS DIFF</td></tr>
+</table>
+<div class="note">Each argument is a single token (variable or literal). For complex expressions, break into multiple lines:
+<pre>10 ASIGN DIFF = X - Y
+20 ASIGN D = ABS DIFF</pre></div>
+
+<h3>LOCAL variables</h3>
+<p>Declare variables local to a sub window. Without LOCAL, all variables are global.</p>
+<pre>CALC window:
+10 LOCAL X, Y, TEMP
+20 ASIGN X = 5
+30 ASIGN Y = 10
+40 ASIGN RESULT = X + Y
+50 RTURN</pre>
+<div class="note">LOCAL must be the first statement in the window. Variables are <code>let</code>-scoped inside the compiled sub function — they don't pollute or read from global state.</div>
+
+<h3>ONERR — error handling</h3>
+<p>Place <code>ONERR</code> anywhere in your program. All subsequent CALSB calls get wrapped in try/catch. Errors are captured in the <code>_sparkERR</code> variable instead of crashing.</p>
+<pre>10 ONERR
+20 CALSB SOMETHING-RISKY
+30 IF _sparkERR &lt;&gt; "" THEN PRINT "Error: " + _sparkERR
+40 END</pre>
+<div class="note">ONERR is a program-wide flag — once set, ALL CALSB calls in the program are wrapped. Check <code>_sparkERR</code> after any call that might fail.</div>
+
+<h2 id="windows">WINDOWS</h2>
+<p>Windows are separate code spaces. MAIN is the entry point. Each window has its own line numbers and variable namespace. GOWIN switches one-way. CALSB with cross-window address calls and returns.</p>
+<pre>rem -- MAIN
+10 imprt store
+20 calsb GET-STORE
+30 gowin INTRO
+
+rem -- INTRO
+10 imprt graph
+20 imprt input
+30 calsb INIT-INPUT
+40 if TAPD-INPUT = 1 then gowin GAME
+50 calsb POLL-INPUT
+60 wait 16
+70 goto 40</pre>
+
+<hr>
+<h2 id="pkgs">PACKAGES</h2>
+<p>Import a package, set its input variables, call a function, read the result. All package vars use -PKGNAME suffix.</p>
+<pre>10 imprt math
+20 asign A-MATH = 0
+30 asign B-MATH = 100
+40 calsb RANDINT-MATH
+50 asign SCORE = RESULT-MATH</pre>
+
+<hr>
+
+<!-- ═══ GRAPHICS ═══ -->
+
+<h2 class="pkg" id="graph">GRAPH</h2>
+<p>Canvas drawing. Call GETSCRN-GRAPH first to size the canvas.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>X-GRAPH, Y-GRAPH</td><td>Position</td></tr>
+<tr><td>W-GRAPH, H-GRAPH</td><td>Screen size (read after GETSCRN)</td></tr>
+<tr><td>R-GRAPH</td><td>Circle radius</td></tr>
+<tr><td>R2-GRAPH, G-GRAPH, B-GRAPH, A-GRAPH</td><td>Color channels 0-255 / 0-1</td></tr>
+<tr><td>X1-GRAPH, Y1-GRAPH, X2-GRAPH, Y2-GRAPH</td><td>Line start / end</td></tr>
+<tr><td>TXT-GRAPH</td><td>Text string to draw</td></tr>
+<tr><td>SIZE-GRAPH</td><td>Font size in px (default 16)</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>GETSCRN</td><td>Size canvas to screen, sets W/H-GRAPH</td></tr>
+<tr><td>CLEAR</td><td>Fill black</td></tr>
+<tr><td>COLOR</td><td>Set color from R2/G/B/A-GRAPH</td></tr>
+<tr><td>CIRC</td><td>Filled circle at X,Y radius R</td></tr>
+<tr><td>RECT</td><td>Filled rect at X,Y size W,H</td></tr>
+<tr><td>LINE</td><td>Line from X1,Y1 to X2,Y2</td></tr>
+<tr><td>TEXT</td><td>Draw TXT-GRAPH at X,Y</td></tr>
+<tr><td>PIXEL</td><td>Single pixel at X,Y</td></tr>
+</table>
+<div class="note">R2-GRAPH is the red channel. R-GRAPH is circle radius. They are separate to avoid ambiguity.</div>
+<pre>10 imprt graph
+20 calsb GETSCRN-GRAPH
+30 asign BX = W-GRAPH / 2
+31 asign BY = H-GRAPH / 2
+40 asign VX = 4
+41 asign VY = 3
+50 while 1 = 1
+60   calsb CLEAR-GRAPH
+70 asign BX = BX + VX
+71 asign BY = BY + VY
+80   if BX &lt; 20 then asign VX = VX * -1
+90   if BX &gt; W-GRAPH - 20 then asign VX = VX * -1
+100  if BY &lt; 20 then asign VY = VY * -1
+110  if BY &gt; H-GRAPH - 20 then asign VY = VY * -1
+120 asign R2-GRAPH = 255
+121 asign G-GRAPH = 80
+122 asign B-GRAPH = 0
+130  calsb COLOR-GRAPH
+140 asign X-GRAPH = BX
+141 asign Y-GRAPH = BY
+142 asign R-GRAPH = 20
+150  calsb CIRC-GRAPH
+160 endwh</pre>
+
+<hr>
+<h2 class="pkg" id="sprite">SPRITE</h2>
+<p>Billboard sprites for use with RAYCAST — block color, ASCII characters, or loaded images rendered depth-sorted into the 3D view. Up to 16 sprites (index 0–15). Requires GRAPH and RAYCAST.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>IDX-SPRITE</td><td>Sprite index 0–15</td></tr>
+<tr><td>X-SPRITE, Y-SPRITE</td><td>Position in tile units (same space as RAYCAST map)</td></tr>
+<tr><td>MODE-SPRITE</td><td>Render mode: "block" / "char" / "image"</td></tr>
+<tr><td>R2-SPRITE, G-SPRITE, B-SPRITE</td><td>Color 0–255 (block mode)</td></tr>
+<tr><td>CHAR-SPRITE</td><td>Character to draw (char mode)</td></tr>
+<tr><td>IMG-SPRITE</td><td>Image name loaded via IMAGE package (image mode)</td></tr>
+<tr><td>VIS-SPRITE</td><td>1 = visible, 0 = hidden</td></tr>
+<tr><td>RESULT-SPRITE</td><td>Index of nearest visible sprite in front of camera (HIT), or visibility (GET)</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Reset all 16 sprites to defaults</td></tr>
+<tr><td>SET</td><td>Set all properties of IDX-SPRITE from current vars</td></tr>
+<tr><td>MOVE</td><td>Update only X,Y of IDX-SPRITE</td></tr>
+<tr><td>SHOW</td><td>Make IDX-SPRITE visible</td></tr>
+<tr><td>HIDE</td><td>Hide IDX-SPRITE</td></tr>
+<tr><td>GET</td><td>Read position and visibility of IDX-SPRITE into vars</td></tr>
+<tr><td>RENDER</td><td>Draw all visible sprites into the current RAYCAST frame</td></tr>
+<tr><td>HIT</td><td>Set RESULT-SPRITE to index of nearest sprite directly ahead, -1 if none</td></tr>
+</table>
+<div class="note">Call RENDER-SPRITE after RENDER-RAYCAST each frame. Sprites use the same tile coordinate system as the RAYCAST map.</div>
+<pre>10 imprt graph
+11 imprt raycast
+12 imprt sprite
+13 imprt input
+20 calsb GETSCRN-GRAPH
+21 calsb INIT-INPUT
+22 calsb INIT-RAYCAST
+23 calsb INIT-SPRITE
+30 rem place a red block sprite at tile 4,4
+40 asign IDX-SPRITE = 0
+50 asign X-SPRITE = 4.5
+51 asign Y-SPRITE = 4.5
+60 asign MODE-SPRITE = "block"
+70 asign R2-SPRITE = 255
+71 asign G-SPRITE = 0
+72 asign B-SPRITE = 0
+80 asign VIS-SPRITE = 1
+90 calsb SET-SPRITE
+100 calsb POLL-INPUT
+110 if TCHD-INPUT = 1 then calsb MOVE-RAYCAST
+120 calsb RENDER-RAYCAST
+130 calsb RENDER-SPRITE
+140 wait 16
+141 goto 100</pre>
+
+<hr>
+<h2 class="pkg" id="image">IMAGE</h2>
+<p>Load images by name for drawing on the canvas or use with SPRITE. Images are stored globally by name.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>NAME-IMAGE</td><td>Name to store / retrieve the image under</td></tr>
+<tr><td>SRC-IMAGE</td><td>URL or base64 data URL to load</td></tr>
+<tr><td>X-IMAGE, Y-IMAGE</td><td>Draw position</td></tr>
+<tr><td>W-IMAGE, H-IMAGE</td><td>Draw size (0 = natural size)</td></tr>
+<tr><td>RESULT-IMAGE</td><td>Name on success, "error" on failure, or comma-separated list for LIST</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>LOAD</td><td>Load SRC-IMAGE and store under NAME-IMAGE (async — waits for load)</td></tr>
+<tr><td>DRAW</td><td>Draw NAME-IMAGE at X,Y size W,H onto canvas</td></tr>
+<tr><td>FREE</td><td>Remove NAME-IMAGE from memory</td></tr>
+<tr><td>HAS</td><td>Set RESULT-IMAGE to 1 if NAME-IMAGE is loaded, else 0</td></tr>
+<tr><td>WIDTH</td><td>Set RESULT-IMAGE to natural width of NAME-IMAGE</td></tr>
+<tr><td>HEIGHT</td><td>Set RESULT-IMAGE to natural height of NAME-IMAGE</td></tr>
+<tr><td>LIST</td><td>Set RESULT-IMAGE to comma-separated list of all loaded image names</td></tr>
+</table>
+<pre>10 imprt image
+20 asign NAME-IMAGE = "hero"
+30 asign SRC-IMAGE = "https://example.com/hero.png"
+40 calsb LOAD-IMAGE
+50 if RESULT-IMAGE = "error" then print "load failed"
+51 if RESULT-IMAGE = "error" then end
+60 asign X-IMAGE = 100
+61 asign Y-IMAGE = 100
+70 calsb DRAW-IMAGE</pre>
+
+<hr>
+<h2 class="pkg" id="raycast">RAYCAST</h2>
+<p>Full DDA raycaster. 3D first-person view on the GRAPH canvas. Requires GRAPH.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>MAP-RAYCAST</td><td>Map string: "1"=wall "0"=open, row by row</td></tr>
+<tr><td>MAPW-RAYCAST, MAPH-RAYCAST</td><td>Map dimensions in tiles</td></tr>
+<tr><td>CX-RAYCAST, CY-RAYCAST</td><td>Camera position in tile units</td></tr>
+<tr><td>CANG-RAYCAST</td><td>Camera angle in degrees (0 = east)</td></tr>
+<tr><td>FOV-RAYCAST</td><td>Field of view degrees (default 60)</td></tr>
+<tr><td>SPEED-RAYCAST, TSPEED-RAYCAST</td><td>Move and turn speed</td></tr>
+<tr><td>WALR/G/B-RAYCAST</td><td>Wall color 0-255</td></tr>
+<tr><td>SKYR/G/B-RAYCAST</td><td>Sky color</td></tr>
+<tr><td>FLRR/G/B-RAYCAST</td><td>Floor color</td></tr>
+<tr><td>SHADE-RAYCAST</td><td>1=distance shading (default), 0=flat</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Parse MAP-RAYCAST string</td></tr>
+<tr><td>RENDER</td><td>Draw one frame</td></tr>
+<tr><td>MOVE / BACK</td><td>Move forward / backward with collision</td></tr>
+<tr><td>TURN / TURNL</td><td>Rotate right / left</td></tr>
+</table>
+<pre>10 imprt graph
+11 imprt input
+12 imprt raycast
+20 calsb GETSCRN-GRAPH
+21 calsb INIT-INPUT
+30 asign MAP-RAYCAST = "111111111000000110000001111111110000001100000011111111"
+40 asign MAPW-RAYCAST = 8
+41 asign MAPH-RAYCAST = 8
+50 calsb INIT-RAYCAST
+60 wait 16
+70 calsb POLL-INPUT
+80 if TCHD-INPUT = 1 then calsb MOVE-RAYCAST
+90 if TAPD-INPUT = 1 then calsb TURN-RAYCAST
+100 calsb RENDER-RAYCAST
+110 goto 60</pre>
+
+<h2 class="pkg" id="threed">THREED</h2>
+<p>3D graphics via Three.js. Loads Three.js from CDN on first INIT — no file size cost. Full scene graph, lighting, shadows, fog. Renders to the GRAPH canvas.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>X-THREED, Y-THREED, Z-THREED</td><td>Position</td></tr>
+<tr><td>W-THREED, H-THREED, D-THREED</td><td>Width, height, depth of box or plane</td></tr>
+<tr><td>RAD-THREED</td><td>Sphere radius</td></tr>
+<tr><td>R-THREED, G-THREED, B-THREED</td><td>Color 0-255</td></tr>
+<tr><td>RX-THREED, RY-THREED, RZ-THREED</td><td>Rotation in degrees (TURN sets absolute, SPIN adds)</td></tr>
+<tr><td>CX-THREED, CY-THREED, CZ-THREED</td><td>Camera position</td></tr>
+<tr><td>TX-THREED, TY-THREED, TZ-THREED</td><td>Camera look-at target</td></tr>
+<tr><td>FOV-THREED</td><td>Camera field of view degrees (default 60)</td></tr>
+<tr><td>BGCR-THREED, BGCG-THREED, BGCB-THREED</td><td>Background/sky color 0-255</td></tr>
+<tr><td>ID-THREED</td><td>Mesh name — set before BOX/SPHERE/PLANE to name it, read RESULT-THREED after</td></tr>
+<tr><td>RESULT-THREED</td><td>ID of last created mesh</td></tr>
+<tr><td>TYP-THREED</td><td>Light type: point / dir / ambient</td></tr>
+<tr><td>VOL-THREED</td><td>Light intensity (default 1)</td></tr>
+<tr><td>ERR-THREED</td><td>Error message, empty if ok</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Load Three.js, create scene + camera + renderer. Call once.</td></tr>
+<tr><td>RENDER</td><td>Draw one frame</td></tr>
+<tr><td>BOX</td><td>Add box mesh at X,Y,Z size W,H,D color R,G,B</td></tr>
+<tr><td>SPHERE</td><td>Add sphere at X,Y,Z radius RAD color R,G,B</td></tr>
+<tr><td>PLANE</td><td>Add flat ground plane at X,Y,Z size W×D</td></tr>
+<tr><td>MOVE</td><td>Move mesh ID-THREED to X,Y,Z</td></tr>
+<tr><td>TURN</td><td>Set mesh rotation to RX,RY,RZ degrees (absolute)</td></tr>
+<tr><td>SPIN</td><td>Add RX,RY,RZ degrees to current rotation (relative)</td></tr>
+<tr><td>CAM</td><td>Move camera to CX,CY,CZ looking at TX,TY,TZ</td></tr>
+<tr><td>LIGHT</td><td>Add light at X,Y,Z color R,G,B intensity VOL type TYP</td></tr>
+<tr><td>FOG</td><td>Add fog: near=X-THREED, far=D-THREED, color R,G,B</td></tr>
+<tr><td>SKY</td><td>Set background color R,G,B</td></tr>
+<tr><td>REMOVE</td><td>Remove mesh ID-THREED from scene</td></tr>
+<tr><td>CLR</td><td>Remove all meshes</td></tr>
+</table>
+<div class="note">Three.js loads from CDN on first INIT — requires internet on first run, then cached offline by the service worker. RENDER-THREED triggers a frame yield like RENDER-RAYCAST.</div>
+<pre>10 imprt threed
+20 imprt input
+30 calsb INIT-INPUT
+40 asign CX-THREED = 0
+41 asign CY-THREED = 3
+42 asign CZ-THREED = 6
+50 calsb INIT-THREED
+60 if ERR-THREED &lt;&gt; "" then print ERR-THREED
+61 end
+70 rem ground plane
+80 asign R-THREED = 60
+81 asign G-THREED = 120
+82 asign B-THREED = 60
+90 asign W-THREED = 20
+91 asign D-THREED = 20
+100 calsb PLANE-THREED
+110 rem spinning box
+120 asign R-THREED = 200
+121 asign G-THREED = 80
+122 asign B-THREED = 40
+130 asign W-THREED = 1
+131 asign H-THREED = 1
+132 asign D-THREED = 1
+140 asign ID-THREED = "cube"
+150 calsb BOX-THREED
+160 rem main loop
+170 calsb POLL-INPUT
+180 asign ID-THREED = "cube"
+190 asign RY-THREED = 2
+200 calsb SPIN-THREED
+210 calsb RENDER-THREED
+220 wait 16
+230 goto 170</pre>
+
+<h3>Solar system example</h3>
+<pre>10 imprt threed
+11 imprt math
+12 imprt timer
+20 asign CX-THREED = 0
+21 asign CY-THREED = 8
+22 asign CZ-THREED = 14
+30 calsb INIT-THREED
+40 rem sun
+50 asign R-THREED = 255
+51 asign G-THREED = 200
+52 asign B-THREED = 0
+60 asign RAD-THREED = 1.5
+61 asign ID-THREED = "sun"
+70 calsb SPHERE-THREED
+80 rem earth
+90 asign R-THREED = 40
+91 asign G-THREED = 80
+92 asign B-THREED = 200
+100 asign RAD-THREED = 0.5
+101 asign ID-THREED = "earth"
+110 calsb SPHERE-THREED
+120 asign ANGLE = 0
+130 calsb TICK-TIMER
+140 asign ANGLE = ANGLE + 1
+150 asign INPUT-MATH = ANGLE * 3.14159 / 180
+160 calsb COS-MATH
+161 asign X-THREED = RESULT-MATH * 4
+170 calsb SIN-MATH
+171 asign Z-THREED = RESULT-MATH * 4
+180 asign ID-THREED = "earth"
+181 asign Y-THREED = 0
+190 calsb MOVE-THREED
+200 calsb RENDER-THREED
+210 wait 16
+220 goto 130</pre>
+<hr>
+
+<!-- ═══ UI ═══ -->
+
+<h2 class="pkg" id="ui">UI</h2>
+<p>HTML overlay elements — buttons, text inputs, rich text labels. Creates a layer above the canvas. All elements positioned in pixels from top-left of output panel.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>IDX-UI</td><td>Element index (0-based, each type has its own index space)</td></tr>
+<tr><td>X-UI, Y-UI</td><td>Position in pixels from top-left</td></tr>
+<tr><td>W-UI, H-UI</td><td>Size in pixels</td></tr>
+<tr><td>LBL-UI</td><td>Button label text</td></tr>
+<tr><td>VAL-UI</td><td>Input field value (read/write)</td></tr>
+<tr><td>TYP-UI</td><td>Input type: text / number / password</td></tr>
+<tr><td>SIZE-UI</td><td>Font size in px (default 16)</td></tr>
+<tr><td>STY-UI</td><td>Word style string: bold / italic / underline / color:#ff0</td></tr>
+<tr><td>RESULT-UI</td><td>Last tapped button index, -1 if none</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Create overlay, sets RESULT-UI=-1. Call once.</td></tr>
+<tr><td>SETBTN</td><td>Create or update button at IDX-UI position/size/label</td></tr>
+<tr><td>HITBTN</td><td>Check for tap, sets RESULT-UI to button index or -1</td></tr>
+<tr><td>SHOWBTN / HIDEBTN</td><td>Show or hide button at IDX-UI</td></tr>
+<tr><td>SETINP</td><td>Create or update input field at IDX-UI</td></tr>
+<tr><td>GETINP</td><td>Read input value into VAL-UI</td></tr>
+<tr><td>SETTXT</td><td>Create or update rich text label at IDX-UI</td></tr>
+<tr><td>WORDSTYLE</td><td>Apply STY-UI to selected word in label</td></tr>
+<tr><td>CLEAR</td><td>Remove all UI elements</td></tr>
+</table>
+<div class="note">HITBTN reads and clears the last tap in one call. RESULT-UI returns -1 when nothing was tapped. Check for a specific button with <code>if RESULT-UI = 0 then ...</code></div>
+<pre>10 imprt ui
+20 calsb INIT-UI
+30 asign IDX-UI = 0
+40 asign X-UI = 10
+41 asign Y-UI = 10
+50 asign W-UI = 160
+51 asign H-UI = 48
+60 asign LBL-UI = "START"
+70 calsb SETBTN-UI
+80 calsb HITBTN-UI
+90 if RESULT-UI = 0 then gowin GAME
+100 wait 16
+110 goto 80</pre>
+
+<hr>
+<h2 class="pkg" id="input">INPUT</h2>
+<p>Touch, mouse, and keyboard input on the canvas. Attach listeners once with INIT, reset each frame with POLL.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>TAPX-INPUT, TAPY-INPUT</td><td>Canvas position of last tap/click</td></tr>
+<tr><td>TAPD-INPUT</td><td>1 on the frame of a new tap/click, reset by POLL</td></tr>
+<tr><td>TCHX-INPUT, TCHY-INPUT</td><td>Current touch/drag position</td></tr>
+<tr><td>TCHD-INPUT</td><td>1 while finger/mouse held down</td></tr>
+<tr><td>KEY-INPUT</td><td>Last key pressed (e.g. "ArrowUp", "a", " ", "Enter")</td></tr>
+<tr><td>KEYD-INPUT</td><td>1 on the frame a key was pressed, reset by POLL</td></tr>
+<tr><td>RESULT-INPUT</td><td>Output of HELD and ANYKEY checks</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Attach all input listeners. Call once at startup.</td></tr>
+<tr><td>POLL</td><td>Reset TAPD-INPUT and KEYD-INPUT. Call each frame.</td></tr>
+<tr><td>HELD</td><td>Set RESULT-INPUT=1 if KEY-INPUT is currently held down</td></tr>
+<tr><td>ANYKEY</td><td>Set RESULT-INPUT=1 if any key is currently held</td></tr>
+<tr><td>CLR</td><td>Clear all key state</td></tr>
+</table>
+<div class="note">Arrow keys and Space are prevented from scrolling the page when INPUT is active. Key names match browser KeyboardEvent.key: "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " " (space), "a"-"z", "0"-"9", "Escape", "Shift", etc.</div>
+
+<h3>Keyboard game loop</h3>
+<pre>10 imprt input
+11 imprt graph
+20 calsb INIT-INPUT
+21 calsb GETSCRN-GRAPH
+30 asign X = 200
+31 asign Y = 200
+40 calsb POLL-INPUT
+50 asign KEY-INPUT = "ArrowLeft"
+60 calsb HELD-INPUT
+70 if RESULT-INPUT = 1 then asign X = X - 3
+80 asign KEY-INPUT = "ArrowRight"
+90 calsb HELD-INPUT
+100 if RESULT-INPUT = 1 then asign X = X + 3
+110 asign KEY-INPUT = "ArrowUp"
+120 calsb HELD-INPUT
+130 if RESULT-INPUT = 1 then asign Y = Y - 3
+140 asign KEY-INPUT = "ArrowDown"
+150 calsb HELD-INPUT
+160 if RESULT-INPUT = 1 then asign Y = Y + 3
+170 calsb CLEAR-GRAPH
+180 asign X-GRAPH = X
+181 asign Y-GRAPH = Y
+182 asign R-GRAPH = 20
+190 calsb CIRC-GRAPH
+200 wait 16
+210 goto 40</pre>
+
+<h3>Tap detection</h3>
+<pre>10 imprt input
+20 calsb INIT-INPUT
+30 calsb POLL-INPUT
+40 if TAPD-INPUT = 1 then print "tapped at " + TAPX-INPUT + "," + TAPY-INPUT
+50 if KEYD-INPUT = 1 then print "key: " + KEY-INPUT
+60 wait 16
+70 goto 30</pre>
+<hr>
+<h2 class="pkg" id="sound">SOUND</h2>
+<p>Web Audio synthesis. Call INIT-SOUND once before any sounds.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>FREQ-SOUND</td><td>Frequency hz (default 440)</td></tr>
+<tr><td>DUR-SOUND</td><td>Duration seconds (default 0.2)</td></tr>
+<tr><td>VOL-SOUND</td><td>Volume 0-1 (default 0.3)</td></tr>
+<tr><td>WAVE-SOUND</td><td>sine / square / sawtooth / triangle</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Create audio context</td></tr>
+<tr><td>BEEP</td><td>Synthesized tone using FREQ/DUR/VOL/WAVE vars</td></tr>
+<tr><td>NOISE</td><td>White noise burst</td></tr>
+</table>
+<pre>10 imprt sound
+20 calsb INIT-SOUND
+30 asign WAVE-SOUND = "sawtooth"
+40 asign FREQ-SOUND = 800
+50 asign DUR-SOUND = 0.08
+60 asign VOL-SOUND = 0.4
+70 calsb BEEP-SOUND</pre>
+
+<hr>
+
+<!-- ═══ DATA ═══ -->
+
+<h2 class="pkg" id="locals">LOCAL VARIABLES</h2>
+<p>Prefix any variable name with <code>$</code> to make it local to the current subroutine. Locals are automatically deleted when the subroutine returns — they never leak to the caller or other subroutines. Works with both <code>asign</code> and bare assignment.</p>
+
+<pre>rem calling code
+10 asign X = 100
+20 calsb DOUBLE
+30 print X          rem still 100 - X was not touched
+40 print $RESULT    rem error - $RESULT is gone after rturn
+50 print RESULT-MAIN rem use a named return var instead
+60 end
+
+100 calsb DOUBLE
+110   asign $N = X * 2   rem $N is local
+120   asign RESULT-MAIN = $N
+130 rturn</pre>
+
+<h3>Recursive example — factorial</h3>
+<pre>10 asign N = 6
+20 calsb FACT
+30 print RESULT-MAIN
+40 end
+
+100 rem FACT: computes N! into RESULT-MAIN
+110 asign $N = N
+120 if $N <= 1 then asign RESULT-MAIN = 1
+121 rturn
+130 asign N = $N - 1
+140 calsb FACT
+150 asign RESULT-MAIN = $N * RESULT-MAIN
+160 rturn</pre>
+
+<div class="note">$ locals are scoped to call depth — each nested CALSB gets its own frame. On RTURN all $vars at that depth are wiped. Return values should use named package-style vars (e.g. RESULT-MYNAME) since those persist across calls.</div>
+<hr>
+<h2 class="pkg" id="math">MATH</h2>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>INPUT-MATH</td><td>Single value input</td></tr>
+<tr><td>A-MATH, B-MATH</td><td>Two value input</td></tr>
+<tr><td>BASE-MATH, EXP-MATH</td><td>For POW</td></tr>
+<tr><td>RESULT-MATH</td><td>Output</td></tr>
+</table>
+<p>Functions: SQRT, POW, ABS, FLOOR, CEIL, ROUND, MOD, MIN, MAX, RANDOM, RANDINT, PI, SIN, COS, LOG</p>
+<pre>rem random number 0-99:
+10 imprt math
+20 asign A-MATH = 0
+21 asign B-MATH = 99
+30 calsb RANDINT-MATH
+40 asign N = RESULT-MATH
+
+rem distance between two points:
+50 asign DX = X2 - X1
+51 asign DY = Y2 - Y1
+60 asign INPUT-MATH = DX * DX + DY * DY
+70 calsb SQRT-MATH
+80 asign DIST = RESULT-MATH</pre>
+
+<hr>
+<h2 class="pkg" id="string">STRING</h2>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>INPUT-STRING</td><td>String to operate on</td></tr>
+<tr><td>N-STRING</td><td>Length, character count, or split index</td></tr>
+<tr><td>START-STRING</td><td>Start position (0-based)</td></tr>
+<tr><td>FIND-STRING</td><td>Search term or split delimiter</td></tr>
+<tr><td>WITH-STRING</td><td>Replacement string</td></tr>
+<tr><td>RESULT-STRING</td><td>Output value</td></tr>
+<tr><td>LEN-STRING</td><td>Number of parts after SPLIT</td></tr>
+</table>
+<p>Functions: LEN, UPPER, LOWER, TRIM, LEFT, RIGHT, MID, SLICE, CONTAINS, REPLACE, REVERSE, REPEAT, INDEXOF, SPLIT, CHAR, CODE</p>
+<div class="note">SLICE: returns INPUT-STRING from START-STRING to N-STRING (exclusive). N-STRING=0 means to end. SPLIT: splits INPUT-STRING by FIND-STRING, returns part N-STRING into RESULT-STRING and total part count into LEN-STRING. INDEXOF: returns position of FIND-STRING in INPUT-STRING starting at START-STRING, or -1. CHAR: returns character for ASCII code N-STRING. CODE: returns ASCII code of character at START-STRING.</div>
+
+<hr>
+<h2 class="pkg" id="convert">CONVERT</h2>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>INPUT-CONVERT</td><td>Value to convert</td></tr>
+<tr><td>RESULT-CONVERT</td><td>Output</td></tr>
+</table>
+<p>Functions: TOINT, TOFLOAT, TOSTR, ISNUM</p>
+
+<hr>
+<h2 class="pkg" id="array">ARRAY</h2>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>ARR-ARRAY</td><td>Array reference handle</td></tr>
+<tr><td>VAL-ARRAY</td><td>Value to push or set</td></tr>
+<tr><td>IDX-ARRAY</td><td>Index to get or set</td></tr>
+<tr><td>RESULT-ARRAY</td><td>Output value or new array reference</td></tr>
+</table>
+<p>Functions: NEW, PUSH, POP, GET, SET, LEN, SORT</p>
+
+<hr>
+<h2 class="pkg" id="store">STORE</h2>
+<p>Persistent key/value storage via localStorage. Keys auto-prefixed with spark_. Values larger than 100 bytes are automatically compressed — no extra steps needed.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>KEY-STORE</td><td>Key name</td></tr>
+<tr><td>VAL-STORE</td><td>Value to store</td></tr>
+<tr><td>RESULT-STORE</td><td>Retrieved value</td></tr>
+</table>
+<p>Functions: SET, GET, DEL, HAS</p>
+<pre>10 imprt store
+20 asign KEY-STORE = "hiscore"
+30 calsb GET-STORE
+40 asign HISCORE = RESULT-STORE</pre>
+
+<hr>
+<h2 class="pkg" id="time">TIME</h2>
+<p>Current date and time values.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>RESULT-TIME</td><td>Output value</td></tr>
+</table>
+<p>Functions: NOW, SECOND, MINUTE, HOUR, DAY, MONTH, YEAR</p>
+
+<hr>
+<h2 class="pkg" id="timer">TIMER</h2>
+<p>Frame timing and delta time for smooth animation.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>DELTA-TIMER</td><td>Milliseconds since last TICK</td></tr>
+<tr><td>RESULT-TIMER</td><td>Raw ms since page load (from MS)</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>START</td><td>Reset timer</td></tr>
+<tr><td>TICK</td><td>Update DELTA-TIMER</td></tr>
+<tr><td>MS</td><td>Write raw ms to RESULT-TIMER</td></tr>
+</table>
+<pre>10 imprt timer
+20 calsb START-TIMER
+30 asign SPEED = 0.3       rem pixels per ms
+40 while 1 = 1
+50   calsb TICK-TIMER
+60   asign BX = BX + SPEED * DELTA-TIMER
+70   if BX &gt; W-GRAPH then asign BX = 0
+80 endwh</pre>
+
+
+<hr>
+<h2 class="pkg" id="dom">DOM</h2>
+<p>Create and manipulate HTML elements overlaid on the output panel. Ideal for building web pages, game UIs, dashboards, and interactive apps. All elements sit on top of the GRAPH canvas.</p>
+
+<h3>Setup</h3>
+<p>Always import and init before using. For full-screen apps, call GRAPH → FULLSCR → DOM in that order:</p>
+<pre>10 IMPRT GRAPH
+20 IMPRT FULLSCR
+30 IMPRT DOM
+40 CALSB GETSCRN-GRAPH    rem init canvas
+50 CALSB MAX-FULLSCR      rem expand panel to 90% screen
+60 CALSB GETSCRN-GRAPH    rem measure expanded size
+70 CALSB INIT-DOM
+80 ASIGN BG-DOM = "#111"
+90 CALSB BODY-DOM</pre>
+
+<h3>Variables</h3>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>ID-DOM</td><td>Element ID (required before MAKE, PAGE, SET etc.)</td></tr>
+<tr><td>TAG-DOM</td><td>HTML tag — div (default), style, input, etc.</td></tr>
+<tr><td>HTML-DOM</td><td>Inner HTML content. No " inside values — use CSS classes instead</td></tr>
+<tr><td>TXT-DOM</td><td>Plain text content (safe, no HTML parsing)</td></tr>
+<tr><td>X-DOM / Y-DOM</td><td>Position in pixels (absolute layout)</td></tr>
+<tr><td>W-DOM / H-DOM</td><td>Size in pixels</td></tr>
+<tr><td>WP-DOM / HP-DOM</td><td>Size as percentage of parent (overrides W/H-DOM)</td></tr>
+<tr><td>SIZE-DOM</td><td>Font size in pixels</td></tr>
+<tr><td>COLOR-DOM</td><td>Text color (CSS color string)</td></tr>
+<tr><td>BG-DOM</td><td>Background color</td></tr>
+<tr><td>BORDER-DOM</td><td>CSS border value e.g. 1px solid #fff</td></tr>
+<tr><td>RADIUS-DOM</td><td>Border radius in pixels</td></tr>
+<tr><td>PAD-DOM</td><td>Padding in pixels</td></tr>
+<tr><td>Z-DOM</td><td>Z-index (stacking order, default 1)</td></tr>
+<tr><td>FLOW-DOM</td><td>1 = relative/flow layout, 0 = absolute (default)</td></tr>
+<tr><td>SCROLL-DOM</td><td>1 = enable vertical scroll on element</td></tr>
+<tr><td>RESULT-DOM</td><td>Output from GET / READ</td></tr>
+<tr><td>TAPD-DOM</td><td>1 if element was clicked since last POLL</td></tr>
+<tr><td>TAPID-DOM</td><td>ID of last clicked element</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Create the DOM overlay layer. Call once at start</td></tr>
+<tr><td>BODY</td><td>Set document body background (BG-DOM) and color (COLOR-DOM)</td></tr>
+<tr><td>PAGE</td><td>Create a full-panel root div. Fills 100% width and height. Supports SCROLL-DOM and PAD-DOM</td></tr>
+<tr><td>MAKE</td><td>Create or replace an element. Uses ID-DOM, X/Y/W/H, BG, COLOR, etc.</td></tr>
+<tr><td>SET</td><td>Update properties of existing element without recreating it</td></tr>
+<tr><td>GET</td><td>Read element text into RESULT-DOM</td></tr>
+<tr><td>INPUT</td><td>Create a text input field</td></tr>
+<tr><td>READ</td><td>Read input field value into RESULT-DOM</td></tr>
+<tr><td>STYLE</td><td>Append raw CSS string (TXT-DOM) to element style</td></tr>
+<tr><td>HIDE / SHOW</td><td>Toggle visibility of element</td></tr>
+<tr><td>DEL</td><td>Remove element from DOM</td></tr>
+<tr><td>CLEAR</td><td>Remove all DOM elements</td></tr>
+<tr><td>POLL</td><td>Reset TAPD-DOM and TAPID-DOM after handling a click</td></tr>
+</table>
+
+<h3>Web page pattern</h3>
+<pre>rem inject CSS classes first (no quotes needed in class names)
+10 ASIGN ID-DOM = "sty"
+20 ASIGN TAG-DOM = "style"
+30 ASIGN W-DOM = 1
+40 ASIGN H-DOM = 1
+50 ASIGN HTML-DOM = ".title{color:#0f0;font-size:32px;font-weight:bold;}"
+60 CALSB MAKE-DOM
+
+rem full-panel scrollable page
+70 ASIGN TAG-DOM = "div"
+80 ASIGN ID-DOM = "page"
+90 ASIGN PAD-DOM = 32
+100 ASIGN BG-DOM = "#111"
+110 ASIGN SCROLL-DOM = 1
+120 ASIGN HTML-DOM = "&lt;h1 class=title&gt;Hello World&lt;/h1&gt;&lt;p&gt;Built in Spark.&lt;/p&gt;"
+130 CALSB PAGE-DOM</pre>
+
+<h3>Gotchas</h3>
+<p>Never put <code>"</code> inside an HTML-DOM or TXT-DOM value — it ends the Spark string and causes parse errors. Use CSS classes (injected via a style element) and unquoted HTML attributes instead.</p>
+<p>Never put <code>
+</code> (newline) inside string values — it splits the Spark line. Use <code>&lt;br&gt;</code> for HTML line breaks.</p>
+<p>W-DOM = 0 and H-DOM = 0 produce 0px elements. Use STYLE-DOM to override with CSS after MAKE-DOM if needed.</p>
+<p>FLOW-DOM = 1 sets position:relative so elements stack vertically — useful for items inside a PAGE container. FLOW-DOM = 0 (default) uses absolute pixel coordinates.</p>
+
+<hr>
+<h2 class="pkg" id="compress">COMPRESS</h2>
+<p>Gzip compression and decompression via the browser's native CompressionStream API. No library — built into Chrome, Firefox, and Safari. Results are base64-encoded strings safe to store anywhere.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>STR-COMPRESS</td><td>String to compress (PACK) or base64 gzip to decompress (UNPACK)</td></tr>
+<tr><td>RESULT-COMPRESS</td><td>Compressed base64 string (PACK) or original string (UNPACK)</td></tr>
+<tr><td>SIZE-COMPRESS</td><td>Compressed byte size after PACK</td></tr>
+<tr><td>ERR-COMPRESS</td><td>Error message, empty if ok</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>PACK</td><td>Compress STR-COMPRESS → base64 gzip in RESULT-COMPRESS</td></tr>
+<tr><td>UNPACK</td><td>Decompress base64 gzip STR-COMPRESS → original string in RESULT-COMPRESS</td></tr>
+<tr><td>CHECK</td><td>Set RESULT-COMPRESS to 1 if CompressionStream is supported, else 0</td></tr>
+</table>
+<div class="note">STORE automatically compresses values larger than 100 bytes — you don't need to call COMPRESS manually for storage. Use COMPRESS directly when sending compressed data via FETCH or FILE.</div>
+<pre>10 imprt compress
+20 asign STR-COMPRESS = BIGSTRING
+30 calsb PACK-COMPRESS
+40 if ERR-COMPRESS &lt;&gt; "" then print ERR-COMPRESS
+41 end
+50 print "compressed to " + SIZE-COMPRESS + " bytes"
+60 asign PACKED = RESULT-COMPRESS
+
+rem decompress later:
+70 asign STR-COMPRESS = PACKED
+80 calsb UNPACK-COMPRESS
+90 asign ORIGINAL = RESULT-COMPRESS</pre>
+<hr>
+<h2 class="pkg" id="fetch">FETCH</h2>
+<p>HTTP requests. Chrome only for hardware serial; fetch works everywhere.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>URL-FETCH</td><td>Target URL</td></tr>
+<tr><td>BODY-FETCH</td><td>POST body string</td></tr>
+<tr><td>TYPE-FETCH</td><td>Content-Type header</td></tr>
+<tr><td>KEY-FETCH</td><td>JSON field name for FIELD</td></tr>
+<tr><td>RESULT-FETCH</td><td>Response text</td></tr>
+<tr><td>STATUS-FETCH</td><td>HTTP status code</td></tr>
+<tr><td>ERR-FETCH</td><td>1 if error, 0 if success</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>GET</td><td>HTTP GET into RESULT-FETCH</td></tr>
+<tr><td>POST</td><td>HTTP POST with BODY-FETCH</td></tr>
+<tr><td>HEAD</td><td>HTTP HEAD request</td></tr>
+<tr><td>PARSE</td><td>Parse RESULT-FETCH as JSON</td></tr>
+<tr><td>FIELD</td><td>Extract KEY-FETCH field from parsed JSON</td></tr>
+</table>
+<pre>10 imprt fetch
+20 asign URL-FETCH = "https://api.example.com/data"
+30 calsb GET-FETCH
+40 if ERR-FETCH = 1 then print "error"
+41 if ERR-FETCH = 1 then end
+50 calsb PARSE-FETCH
+60 asign KEY-FETCH = "score"
+70 calsb FIELD-FETCH
+80 print RESULT-FETCH</pre>
+
+<hr>
+<h2 class="pkg" id="file">FILE</h2>
+<p>In-memory file buffer with download. Write content chunk by chunk, then trigger a browser download.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>NAME-FILE</td><td>Filename for download</td></tr>
+<tr><td>DATA-FILE</td><td>Content to write or set</td></tr>
+<tr><td>MIME-FILE</td><td>MIME type (default text/html)</td></tr>
+<tr><td>RESULT-FILE</td><td>Buffer contents (READ) or length (LEN)</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Reset buffer and set NAME-FILE to output.html</td></tr>
+<tr><td>WRITE</td><td>Append DATA-FILE to buffer</td></tr>
+<tr><td>SET</td><td>Replace buffer entirely with DATA-FILE</td></tr>
+<tr><td>READ</td><td>Read buffer into RESULT-FILE</td></tr>
+<tr><td>LEN</td><td>Set RESULT-FILE to buffer byte length</td></tr>
+<tr><td>CLEAR</td><td>Empty the buffer</td></tr>
+<tr><td>SAVE</td><td>Trigger browser download of buffer as NAME-FILE</td></tr>
+</table>
+<pre>10 imprt file
+20 asign NAME-FILE = "data.txt"
+30 asign MIME-FILE = "text/plain"
+40 calsb CLEAR-FILE
+50 asign DATA-FILE = "hello world"
+60 calsb WRITE-FILE
+70 calsb SAVE-FILE</pre>
+
+<hr>
+
+<!-- ═══ SYSTEM ═══ -->
+
+<h2 class="pkg" id="wakelock">WAKELOCK</h2>
+<p>Keeps the screen on while the program runs. Automatically released when program stops.</p>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>LOCK</td><td>Request screen wake lock</td></tr>
+<tr><td>FREE</td><td>Release wake lock</td></tr>
+<tr><td>CHECK</td><td>Set RESULT-WAKELOCK: 1 if active</td></tr>
+</table>
+<pre>10 imprt wakelock
+20 calsb LOCK-WAKELOCK
+30 rem screen stays on while program runs</pre>
+
+<hr>
+<h2 class="pkg" id="update">UPDATE <span class="badge frozen">FROZEN</span></h2>
+<p>Self-update Spark from a hosted URL. Fetches a new version, compares version strings, then writes the new HTML to the service worker cache so the next reload serves the updated file. No server needed — just host the HTML file anywhere.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>URL-UPDATE</td><td>URL of the hosted Spark HTML file to check</td></tr>
+<tr><td>RESULT-UPDATE</td><td>1 if update available (version differs), else 0. After VER: current version string.</td></tr>
+<tr><td>REMOTE-UPDATE</td><td>Version string from remote file</td></tr>
+<tr><td>CUR-UPDATE</td><td>Current running version string</td></tr>
+<tr><td>BUILD-UPDATE</td><td>Build tag string (lists included packages)</td></tr>
+<tr><td>HTML-UPDATE</td><td>Full HTML of fetched update (set by CHECK, consumed by APPLY)</td></tr>
+<tr><td>ERR-UPDATE</td><td>Error message, empty if ok</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>VER</td><td>Read current version into RESULT-UPDATE and BUILD-UPDATE</td></tr>
+<tr><td>CHECK</td><td>Fetch URL-UPDATE, compare versions, set RESULT-UPDATE=1 if newer</td></tr>
+<tr><td>APPLY</td><td>Write fetched HTML to SW cache, reload page with new version</td></tr>
+</table>
+<div class="note">APPLY writes the new version to the service worker cache under the current page URL. On reload, the SW serves the new version — no file replacement needed. If SW is unavailable, APPLY downloads the file instead.</div>
+<pre>10 imprt update
+20 calsb VER-UPDATE
+30 print "running: " + RESULT-UPDATE + " " + BUILD-UPDATE
+40 asign URL-UPDATE = "https://yoursite.com/Spark.html"
+50 calsb CHECK-UPDATE
+60 if ERR-UPDATE &lt;&gt; "" then print ERR-UPDATE
+61 end
+70 if RESULT-UPDATE = 0 then print "already up to date"
+71 if RESULT-UPDATE = 0 then end
+80 print "update available: " + REMOTE-UPDATE
+90 print "apply? (tap run again to confirm)"
+100 rem add a CONFIRM UI button here in real use
+110 calsb APPLY-UPDATE
+120 rem page reloads automatically if SW available</pre>
+<hr>
+<h2 class="pkg" id="sys">SYS</h2>
+<p>System information and utilities.</p>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>PLATFORM</td><td>Set RESULT-SYS to os string: android / ios / desktop</td></tr>
+<tr><td>UA</td><td>Set RESULT-SYS to full user agent string</td></tr>
+<tr><td>ONLINE</td><td>Set RESULT-SYS to 1 if online, 0 if offline</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ HARDWARE ═══ -->
+
+<h2 class="pkg" id="emul">EMUL</h2>
+<p>Real Linux x86 running in the browser via v86. Downloads buildroot Linux (~6mb total on first use), boots headless, communicates via serial I/O. Spark handles all graphics — Linux handles computation, scripting, compilers, file system.</p>
+<div class="note">Downloads ~6mb on first use from copy.sh/k.copy.sh — then cached permanently in IndexedDB. Second run onwards is fully offline, no internet needed. SNAP saves machine state to IndexedDB too — restore in ~1s instead of cold booting (~15-30s).</div>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>CMD-EMUL</td><td>Shell command to run (SEND or RUN)</td></tr>
+<tr><td>RESULT-EMUL</td><td>Clean output from last command (ANSI stripped, echo/prompt removed)</td></tr>
+<tr><td>RAW-EMUL</td><td>Raw serial output including ANSI codes</td></tr>
+<tr><td>WAIT-EMUL</td><td>Ms to wait for output before reading (default 500)</td></tr>
+<tr><td>READY-EMUL</td><td>1 if booted and ready, 0 otherwise</td></tr>
+<tr><td>STATUS-EMUL</td><td>Human-readable status: not init / loading emulator / downloading linux / booting / ready / error</td></tr>
+<tr><td>INFO-EMUL</td><td>CONFIRM download details string</td></tr>
+<tr><td>ERR-EMUL</td><td>Error message, empty if ok</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>CONFIRM</td><td>Set INFO-EMUL to download details. Always call and show to user before INIT.</td></tr>
+<tr><td>INIT</td><td>Download files, boot Linux, wait for shell prompt. Takes 10-30s cold.</td></tr>
+<tr><td>SEND</td><td>Send CMD-EMUL to shell (non-blocking — use RECV after)</td></tr>
+<tr><td>RECV</td><td>Wait WAIT-EMUL ms then read output into RESULT-EMUL</td></tr>
+<tr><td>RUN</td><td>SEND + RECV in one call — send CMD-EMUL, wait, return output</td></tr>
+<tr><td>SNAP</td><td>Save machine state to localStorage (~4mb). Next INIT+LOAD restores in ~1s.</td></tr>
+<tr><td>LOAD</td><td>Restore saved snapshot — must call INIT first to load emulator</td></tr>
+<tr><td>CHECK</td><td>Update READY-EMUL and STATUS-EMUL without blocking</td></tr>
+<tr><td>WIPE</td><td>Clear IndexedDB cache — forces re-download on next INIT</td></tr>
+<tr><td>STOP</td><td>Shut down emulator, free memory</td></tr>
+</table>
+
+<h3>Basic usage</h3>
+<pre>10 imprt emul
+20 calsb CONFIRM-EMUL
+30 print INFO-EMUL
+40 rem show user the download info, then proceed
+50 print "booting linux..."
+60 calsb INIT-EMUL
+70 if ERR-EMUL &lt;&gt; "" then print ERR-EMUL
+71 end
+80 print "ready: " + STATUS-EMUL
+90 asign CMD-EMUL = "uname -a"
+100 calsb RUN-EMUL
+110 print RESULT-EMUL
+120 asign CMD-EMUL = "echo hello from linux"
+130 calsb RUN-EMUL
+140 print RESULT-EMUL</pre>
+
+<h3>Python script execution</h3>
+<pre>10 imprt emul
+20 calsb INIT-EMUL
+30 if ERR-EMUL &lt;&gt; "" then print ERR-EMUL
+31 end
+40 rem write a python script
+50 asign CMD-EMUL = "echo 'print(sum(range(1,101)))' > /tmp/s.py"
+60 calsb RUN-EMUL
+70 asign CMD-EMUL = "python3 /tmp/s.py"
+80 asign WAIT-EMUL = 2000
+90 calsb RUN-EMUL
+100 print "sum 1-100: " + RESULT-EMUL</pre>
+
+<h3>Snapshot for fast boot</h3>
+<pre>rem first run - cold boot + save snapshot
+10 imprt emul
+20 calsb INIT-EMUL
+30 if ERR-EMUL &lt;&gt; "" then print ERR-EMUL
+31 end
+40 calsb SNAP-EMUL
+50 print "snapshot saved: " + STATUS-EMUL
+
+rem subsequent runs - restore snapshot (~1 second)
+60 calsb INIT-EMUL      rem loads emulator only
+70 calsb LOAD-EMUL      rem restores snapshot
+80 if ERR-EMUL &lt;&gt; "" then print "no snap, using cold boot"
+90 print STATUS-EMUL</pre>
+<hr>
+<h2 class="pkg" id="serial">SERIAL <span class="badge frozen">FROZEN</span></h2>
+<p>Hardware serial port for Arduino and Raspberry Pi over USB. <strong>Chrome only.</strong> The FROZEN badge means this package cannot be automatically updated — hardware packages are human-reviewed only.</p>
+<div class="note">Always call CONFIRM-SERIAL before OPEN-SERIAL. The browser will show a port picker — user selects their device. This is required by the Web Serial API.</div>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>BAUD-SERIAL</td><td>Baud rate (default 9600, common: 115200)</td></tr>
+<tr><td>AVAIL-SERIAL</td><td>1 if a full line is ready to read, 0 if not</td></tr>
+<tr><td>DATA-SERIAL</td><td>Comma-separated byte values for BYTES (e.g. "0,255,128")</td></tr>
+<tr><td>MSG-SERIAL</td><td>String to send to device</td></tr>
+<tr><td>RESULT-SERIAL</td><td>Line received from device, or status value</td></tr>
+<tr><td>ERR-SERIAL</td><td>Error message string, empty if ok</td></tr>
+<tr><td>STATUS-SERIAL</td><td>open / closed / error</td></tr>
+</table>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>CONFIRM</td><td>Check Web Serial available, set RESULT-SERIAL 1/0</td></tr>
+<tr><td>OPEN</td><td>Show port picker, connect at BAUD-SERIAL</td></tr>
+<tr><td>SEND</td><td>Send MSG-SERIAL string to device</td></tr>
+<tr><td>RECV</td><td>Read one line into RESULT-SERIAL (empty if none ready)</td></tr>
+<tr><td>CLOSE</td><td>Disconnect from device</td></tr>
+<tr><td>CHECK</td><td>Set RESULT-SERIAL: 1 if Web Serial supported</td></tr>
+</table>
+<pre>10 imprt serial
+20 calsb CONFIRM-SERIAL
+30 if RESULT-SERIAL = 0 then print "Chrome only"
+31 if RESULT-SERIAL = 0 then end
+40 asign BAUD-SERIAL = 9600
+50 calsb OPEN-SERIAL
+60 if ERR-SERIAL &lt;&gt; "" then print ERR-SERIAL
+61 end
+70 print "connected"
+80 asign MSG-SERIAL = "LED=ON"
+90 calsb SEND-SERIAL
+100 calsb RECV-SERIAL
+110 if RESULT-SERIAL &lt;&gt; "" then print RESULT-SERIAL
+120 wait 100
+130 goto 100</pre>
+
+<h3>Arduino Template</h3>
+<pre>void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    if (cmd == "LED=ON")  digitalWrite(13, HIGH);
+    if (cmd == "LED=OFF") digitalWrite(13, LOW);
+    Serial.println("OK");
+  }
+}</pre>
+
+<h3>Raspberry Pi Python Bridge</h3>
+<pre>import serial, RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18, GPIO.OUT)
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+while True:
+    cmd = ser.readline().decode().strip()
+    if cmd == "LED=ON":  GPIO.output(18, True)
+    if cmd == "LED=OFF": GPIO.output(18, False)
+    ser.write(b"OK\n")</pre>
+
+
+<hr>
+<h2 class="pkg" id="sheet">SHEET</h2>
+<p>A 40×40 spreadsheet grid rendered as an HTML table. Requires UI to be imported first — SHEET attaches to the UI layer. Supports click selection, cell read/write, row/column insert/delete.</p>
+<div class="note">SHEET requires <code>IMPRT UI</code> before <code>IMPRT SHEET</code>. Size and position are set at init time via X/Y/W/H-SHEET and cannot be changed after INIT.</div>
+
+<h3>Variables</h3>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>X-SHEET / Y-SHEET</td><td>Position in pixels (set before INIT)</td></tr>
+<tr><td>W-SHEET / H-SHEET</td><td>Width/height in pixels (set before INIT, default 320×400)</td></tr>
+<tr><td>SELX-SHEET</td><td>Selected column (0-based). Set by click or before SETCELL/GETCELL</td></tr>
+<tr><td>SELY-SHEET</td><td>Selected row (0-based)</td></tr>
+<tr><td>SELX2-SHEET</td><td>Second column for range selection (-1 if none)</td></tr>
+<tr><td>SELY2-SHEET</td><td>Second row for range selection (-1 if none)</td></tr>
+<tr><td>VAL-SHEET</td><td>Value to write with SETCELL</td></tr>
+<tr><td>RESULT-SHEET</td><td>Value read by GETCELL, or 1/0 from TICK</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>INIT</td><td>Create the spreadsheet grid. Uses X/Y/W/H-SHEET for position and size</td></tr>
+<tr><td>TICK</td><td>Poll for user interaction. Sets RESULT-SHEET=1 if clicked, updates SEL vars</td></tr>
+<tr><td>SETCELL</td><td>Write VAL-SHEET to cell at SELX/SELY-SHEET</td></tr>
+<tr><td>GETCELL</td><td>Read cell at SELX/SELY-SHEET into RESULT-SHEET</td></tr>
+<tr><td>CLR</td><td>Clear selected cell or range</td></tr>
+<tr><td>ADDROW</td><td>Insert row at SELY-SHEET</td></tr>
+<tr><td>DELROW</td><td>Delete row at SELY-SHEET</td></tr>
+<tr><td>ADDCOL</td><td>Insert column at SELX-SHEET</td></tr>
+<tr><td>DELCOL</td><td>Delete column at SELX-SHEET</td></tr>
+</table>
+
+<div class="note">W-SHEET and H-SHEET cannot be changed after INIT — resize is not supported at runtime. To change size, the sheet would need to be recreated. Cell outlines (borders) are always on — individual cell styling is not supported.</div>
+
+<h3>Example — budget spreadsheet</h3>
+<pre>10 IMPRT UI
+20 IMPRT SHEET
+30 ASIGN X-SHEET = 0
+40 ASIGN Y-SHEET = 60
+50 ASIGN W-SHEET = 600
+60 ASIGN H-SHEET = 400
+70 CALSB INIT-SHEET
+rem prefill headers
+80 ASIGN SELX-SHEET = 0
+90 ASIGN SELY-SHEET = 0
+100 ASIGN VAL-SHEET = Item
+110 CALSB SETCELL-SHEET
+120 ASIGN SELX-SHEET = 1
+130 ASIGN VAL-SHEET = Amount
+140 CALSB SETCELL-SHEET
+rem prefill data
+150 ASIGN SELY-SHEET = 1
+160 ASIGN SELX-SHEET = 0
+170 ASIGN VAL-SHEET = Rent
+180 CALSB SETCELL-SHEET
+190 ASIGN SELX-SHEET = 1
+200 ASIGN VAL-SHEET = 1200
+210 CALSB SETCELL-SHEET
+rem poll loop
+220 CALSB TICK-SHEET
+230 if RESULT-SHEET = 0 then goto 220
+240 rem user clicked a cell
+250 CALSB GETCELL-SHEET
+260 PRINT RESULT-SHEET
+270 goto 220</pre>
+
+<hr>
+<h2 class="pkg" id="template">TEMPLATE</h2>
+<p>Store and retrieve named multiline text blocks. The <code>TMPL</code> / <code>ENDTMPL</code> keywords define blocks directly in code without quote escaping — every line between them is stored as-is including newlines and indentation. The TEMPLATE package functions manipulate those blocks at runtime.</p>
+<p>The main use case: any text too long or complex to fit in a quoted ASIGN string — HTML layouts, email bodies, prompts, code snippets, CSV data.</p>
+
+<h3>Keywords</h3>
+<table>
+<tr><th>KEYWORD</th><th>PURPOSE</th></tr>
+<tr><td>TMPL name</td><td>Begin a named text block. Everything after this line is captured.</td></tr>
+<tr><td>ENDTMPL</td><td>End the block. The text is stored under the given name.</td></tr>
+</table>
+
+<h3>Variables</h3>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>NAME-TEMPLATE</td><td>Which template to operate on (case insensitive)</td></tr>
+<tr><td>DATA-TEMPLATE</td><td>Content to write or append with SET/APPEND</td></tr>
+<tr><td>RESULT-TEMPLATE</td><td>Output from GET, LEN, LIST</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>GET-TEMPLATE</td><td>Read template into RESULT-TEMPLATE</td></tr>
+<tr><td>SET-TEMPLATE</td><td>Write DATA-TEMPLATE to NAME-TEMPLATE (replaces)</td></tr>
+<tr><td>APPEND-TEMPLATE</td><td>Append DATA-TEMPLATE to existing content</td></tr>
+<tr><td>LEN-TEMPLATE</td><td>Character length of template into RESULT-TEMPLATE</td></tr>
+<tr><td>LIST-TEMPLATE</td><td>Comma-separated list of all template names</td></tr>
+<tr><td>CLEAR-TEMPLATE</td><td>Empty a template</td></tr>
+</table>
+
+<h3>Example — HTML page via TMPL</h3>
+<pre>TMPL PAGE
+&lt;div class=hero&gt;
+  &lt;h1 class=title&gt;My App&lt;/h1&gt;
+  &lt;p class=sub&gt;Built in Spark&lt;/p&gt;
+  &lt;div class=card&gt;Feature one&lt;/div&gt;
+&lt;/div&gt;
+ENDTMPL
+
+TMPL STYLES
+.hero{padding:40px;background:#111;}
+.title{color:#0f0;font-size:32px;}
+.sub{color:#888;margin-bottom:24px;}
+.card{background:#222;padding:16px;border-radius:8px;}
+ENDTMPL
+
+10 IMPRT DOM
+20 CALSB INIT-DOM
+30 ASIGN ID-DOM = sty
+40 ASIGN TAG-DOM = style
+50 ASIGN W-DOM = 1
+60 ASIGN H-DOM = 1
+70 ASIGN NAME-TEMPLATE = STYLES
+80 CALSB GET-TEMPLATE
+90 ASIGN HTML-DOM = RESULT-TEMPLATE
+100 CALSB MAKE-DOM
+110 ASIGN ID-DOM = page
+120 ASIGN NAME-TEMPLATE = PAGE
+130 CALSB GET-TEMPLATE
+140 ASIGN HTML-DOM = RESULT-TEMPLATE
+150 CALSB PAGE-DOM
+160 END</pre>
+
+<h3>Building text dynamically</h3>
+<pre>10 IMPRT TEMPLATE
+20 ASIGN NAME-TEMPLATE = REPORT
+30 CALSB CLEAR-TEMPLATE
+40 ASIGN DATA-TEMPLATE = Line one
+50 CALSB APPEND-TEMPLATE
+60 ASIGN DATA-TEMPLATE = Line two
+70 CALSB APPEND-TEMPLATE
+80 ASIGN NAME-TEMPLATE = REPORT
+90 CALSB GET-TEMPLATE
+100 PRINT RESULT-TEMPLATE</pre>
+
+<hr>
+
+<hr>
+
+<!-- ═══ REGEX ═══ -->
+<h2 class="pkg" id="regex">REGEX</h2>
+<p>Regular expression matching, search, replace and split. All functions use PAT-REGEX for the pattern and optional FLAGS-REGEX (e.g. <code>gi</code>).</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>TEST-REGEX</td><td>INPUT-REGEX, PAT-REGEX, [FLAGS-REGEX]</td><td>RESULT-REGEX (1/0)</td></tr>
+<tr><td>MATCH-REGEX</td><td>INPUT-REGEX, PAT-REGEX, [FLAGS-REGEX]</td><td>RESULT-REGEX (first match), N-REGEX (group count)</td></tr>
+<tr><td>MATCHN-REGEX</td><td>INPUT-REGEX, PAT-REGEX, N-REGEX (group index)</td><td>RESULT-REGEX (nth group)</td></tr>
+<tr><td>REPLACE-REGEX</td><td>INPUT-REGEX, PAT-REGEX, WITH-REGEX, [FLAGS-REGEX]</td><td>RESULT-REGEX</td></tr>
+<tr><td>SPLIT-REGEX</td><td>INPUT-REGEX, PAT-REGEX, N-REGEX (part index)</td><td>RESULT-REGEX, LEN-REGEX</td></tr>
+<tr><td>FIND-REGEX</td><td>INPUT-REGEX, PAT-REGEX, [FLAGS-REGEX]</td><td>RESULT-REGEX (CSV of all matches), N-REGEX</td></tr>
+</table>
+<pre>10 imprt regex
+20 asign INPUT-REGEX = "hello world 42"
+30 asign PAT-REGEX = "\d+"
+40 calsb MATCH-REGEX
+50 print RESULT-REGEX    rem prints 42</pre>
+
+<hr>
+
+<!-- ═══ JSON ═══ -->
+<h2 class="pkg" id="json">JSON</h2>
+<p>Parse and build JSON. Objects are stored internally by KEY-JSON (default <code>_</code>). Use dot-path notation for nested access.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>PARSE-JSON</td><td>INPUT-JSON (JSON string), [KEY-JSON]</td><td>Stores parsed object, ERR-JSON</td></tr>
+<tr><td>STR-JSON</td><td>[KEY-JSON], [PRETTY-JSON=1]</td><td>RESULT-JSON (JSON string)</td></tr>
+<tr><td>GET-JSON</td><td>[KEY-JSON], PATH-JSON (dot.path)</td><td>RESULT-JSON</td></tr>
+<tr><td>SET-JSON</td><td>[KEY-JSON], PATH-JSON, VAL-JSON</td><td>—</td></tr>
+<tr><td>KEYS-JSON</td><td>[KEY-JSON]</td><td>RESULT-JSON (CSV of keys), N-JSON</td></tr>
+<tr><td>LEN-JSON</td><td>[KEY-JSON]</td><td>RESULT-JSON (count)</td></tr>
+<tr><td>ENCODE-JSON</td><td>INPUT-JSON (any value)</td><td>RESULT-JSON (JSON string)</td></tr>
+<tr><td>DECODE-JSON</td><td>INPUT-JSON (JSON string)</td><td>RESULT-JSON (parsed value)</td></tr>
+</table>
+<pre>10 imprt json
+20 asign INPUT-JSON = "{"name":"Spark","ver":1}"
+30 calsb PARSE-JSON
+40 asign PATH-JSON = "name"
+50 calsb GET-JSON
+60 print RESULT-JSON    rem prints Spark</pre>
+
+<hr>
+
+<!-- ═══ CRYPTO ═══ -->
+<h2 class="pkg" id="crypto">CRYPTO</h2>
+<p>Cryptographic utilities: hashing, secure random, Base64, UUID.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>HASH-CRYPTO</td><td>INPUT-CRYPTO</td><td>RESULT-CRYPTO (SHA-256 hex) — async</td></tr>
+<tr><td>MD5-CRYPTO</td><td>INPUT-CRYPTO</td><td>RESULT-CRYPTO (fast non-crypto hash)</td></tr>
+<tr><td>RAND-CRYPTO</td><td>[N-CRYPTO=16] (byte count)</td><td>RESULT-CRYPTO (hex string)</td></tr>
+<tr><td>UUID-CRYPTO</td><td>—</td><td>RESULT-CRYPTO (UUID v4)</td></tr>
+<tr><td>RANDINT-CRYPTO</td><td>A-CRYPTO, B-CRYPTO</td><td>RESULT-CRYPTO (secure random int)</td></tr>
+<tr><td>B64ENC-CRYPTO</td><td>INPUT-CRYPTO</td><td>RESULT-CRYPTO (base64)</td></tr>
+<tr><td>B64DEC-CRYPTO</td><td>INPUT-CRYPTO</td><td>RESULT-CRYPTO (decoded string)</td></tr>
+</table>
+<pre>10 imprt crypto
+20 calsb UUID-CRYPTO
+30 print RESULT-CRYPTO    rem e.g. 550e8400-e29b-41d4...</pre>
+
+<hr>
+
+<!-- ═══ CLIPBOARD ═══ -->
+<h2 class="pkg" id="clipboard">CLIPBOARD</h2>
+<p>Read and write the system clipboard. Requires user permission on first read.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>WRITE-CLIPBOARD</td><td>TEXT-CLIPBOARD</td><td>ERR-CLIPBOARD</td></tr>
+<tr><td>READ-CLIPBOARD</td><td>—</td><td>RESULT-CLIPBOARD, ERR-CLIPBOARD</td></tr>
+<tr><td>CHECK-CLIPBOARD</td><td>—</td><td>RESULT-CLIPBOARD (1/0 supported)</td></tr>
+</table>
+<pre>10 imprt clipboard
+20 asign TEXT-CLIPBOARD = "hello from spark"
+30 calsb WRITE-CLIPBOARD
+40 calsb READ-CLIPBOARD
+50 print RESULT-CLIPBOARD</pre>
+
+<hr>
+
+<!-- ═══ MIDI ═══ -->
+<h2 class="pkg" id="midi">MIDI</h2>
+<p>Web MIDI API for sending notes and CC messages to connected MIDI devices. Call INIT-MIDI first.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-MIDI</td><td>—</td><td>RESULT-MIDI (1/0), ERR-MIDI</td></tr>
+<tr><td>OUTPUTS-MIDI</td><td>—</td><td>RESULT-MIDI (CSV of output names), N-MIDI</td></tr>
+<tr><td>NOTE-MIDI</td><td>IDX-MIDI, CH-MIDI, NOTE-MIDI, VEL-MIDI, [DUR-MIDI ms]</td><td>ERR-MIDI</td></tr>
+<tr><td>SEND-MIDI</td><td>IDX-MIDI, STATUS-MIDI, NOTE-MIDI, VEL-MIDI</td><td>ERR-MIDI</td></tr>
+<tr><td>CC-MIDI</td><td>IDX-MIDI, CH-MIDI, CC-MIDI, VAL-MIDI</td><td>ERR-MIDI</td></tr>
+<tr><td>CHECK-MIDI</td><td>—</td><td>RESULT-MIDI (1 if browser supports MIDI)</td></tr>
+</table>
+<pre>10 imprt midi
+20 calsb INIT-MIDI
+30 asign NOTE-MIDI = 60
+40 asign VEL-MIDI = 100
+50 asign DUR-MIDI = 500
+60 calsb NOTE-MIDI    rem middle C for 500ms</pre>
+
+<hr>
+
+<!-- ═══ SOCKET ═══ -->
+<h2 class="pkg" id="socket">SOCKET</h2>
+<p>WebSocket client. Multiple connections supported via ID-SOCKET.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>OPEN-SOCKET</td><td>ID-SOCKET, URL-SOCKET</td><td>ERR-SOCKET</td></tr>
+<tr><td>SEND-SOCKET</td><td>ID-SOCKET, MSG-SOCKET</td><td>ERR-SOCKET</td></tr>
+<tr><td>RECV-SOCKET</td><td>ID-SOCKET</td><td>RESULT-SOCKET (next message), AVAIL-SOCKET (remaining)</td></tr>
+<tr><td>STATUS-SOCKET</td><td>ID-SOCKET</td><td>RESULT-SOCKET (connecting/open/closed/error)</td></tr>
+<tr><td>CLOSE-SOCKET</td><td>ID-SOCKET</td><td>ERR-SOCKET</td></tr>
+<tr><td>CHECK-SOCKET</td><td>—</td><td>RESULT-SOCKET (1/0 supported)</td></tr>
+</table>
+<pre>10 imprt socket
+20 asign ID-SOCKET = "ws1"
+30 asign URL-SOCKET = "wss://echo.websocket.org"
+40 calsb OPEN-SOCKET
+50 asign MSG-SOCKET = "hello"
+60 calsb SEND-SOCKET
+70 calsb RECV-SOCKET
+80 print RESULT-SOCKET</pre>
+
+<hr>
+
+<!-- ═══ MATRIX ═══ -->
+<h2 class="pkg" id="matrix">MATRIX</h2>
+<p>2D matrix creation and math. Matrices are stored by ID-MATRIX.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>NEW-MATRIX</td><td>ID-MATRIX, ROWS-MATRIX, COLS-MATRIX</td><td>—</td></tr>
+<tr><td>SET-MATRIX</td><td>ID-MATRIX, ROW-MATRIX, COL-MATRIX, VAL-MATRIX</td><td>—</td></tr>
+<tr><td>GET-MATRIX</td><td>ID-MATRIX, ROW-MATRIX, COL-MATRIX</td><td>RESULT-MATRIX</td></tr>
+<tr><td>MUL-MATRIX</td><td>A-MATRIX, B-MATRIX → ID-MATRIX</td><td>ERR-MATRIX</td></tr>
+<tr><td>ADD-MATRIX</td><td>A-MATRIX, B-MATRIX → ID-MATRIX</td><td>ERR-MATRIX</td></tr>
+<tr><td>SCALE-MATRIX</td><td>ID-MATRIX, VAL-MATRIX (scalar)</td><td>—</td></tr>
+<tr><td>STR-MATRIX</td><td>ID-MATRIX</td><td>RESULT-MATRIX (rows separated by ;)</td></tr>
+<tr><td>ROWS-MATRIX</td><td>ID-MATRIX</td><td>RESULT-MATRIX</td></tr>
+<tr><td>COLS-MATRIX</td><td>ID-MATRIX</td><td>RESULT-MATRIX</td></tr>
+</table>
+<pre>10 imprt matrix
+20 asign ID-MATRIX = "m"
+30 asign ROWS-MATRIX = 2
+40 asign COLS-MATRIX = 2
+50 calsb NEW-MATRIX
+60 asign ROW-MATRIX = 0
+70 asign COL-MATRIX = 0
+80 asign VAL-MATRIX = 5
+90 calsb SET-MATRIX</pre>
+
+<hr>
+
+<!-- ═══ DATE ═══ -->
+<h2 class="pkg" id="date">DATE</h2>
+<p>Date and time. Timestamps are milliseconds since epoch (Unix ms). Use FMT-DATE tokens: YYYY MM DD HH mm SS.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>NOW-DATE</td><td>—</td><td>RESULT-DATE (ISO string), TS-DATE (ms)</td></tr>
+<tr><td>FORMAT-DATE</td><td>TS-DATE, FMT-DATE</td><td>RESULT-DATE</td></tr>
+<tr><td>PARSE-DATE</td><td>INPUT-DATE</td><td>TS-DATE</td></tr>
+<tr><td>YEAR-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE</td></tr>
+<tr><td>MONTH-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (1-12)</td></tr>
+<tr><td>DAY-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (1-31)</td></tr>
+<tr><td>HOUR-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (0-23)</td></tr>
+<tr><td>MINUTE-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (0-59)</td></tr>
+<tr><td>SECOND-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (0-59)</td></tr>
+<tr><td>WEEKDAY-DATE</td><td>[TS-DATE]</td><td>RESULT-DATE (0=Sun)</td></tr>
+<tr><td>DIFF-DATE</td><td>A-DATE, B-DATE, UNIT-DATE (ms divisor)</td><td>RESULT-DATE</td></tr>
+<tr><td>ADD-DATE</td><td>TS-DATE, MS-DATE</td><td>RESULT-DATE, TS-DATE</td></tr>
+</table>
+<pre>10 imprt date
+20 calsb NOW-DATE
+30 asign FMT-DATE = "YYYY-MM-DD HH:mm"
+40 calsb FORMAT-DATE
+50 print RESULT-DATE    rem e.g. 2026-03-06 14:30</pre>
+
+<hr>
+
+<!-- ═══ COLOR ═══ -->
+<h2 class="pkg" id="color">COLOR</h2>
+<p>Color conversion, mixing, and generation. Results are hex strings (#rrggbb) or rgba() strings.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>RGB-COLOR</td><td>R-COLOR, G-COLOR, B-COLOR (0-255)</td><td>RESULT-COLOR (#hex)</td></tr>
+<tr><td>HEX-COLOR</td><td>INPUT-COLOR (#hex)</td><td>R-COLOR, G-COLOR, B-COLOR, RESULT-COLOR</td></tr>
+<tr><td>MIX-COLOR</td><td>A-COLOR, B-COLOR (#hex), T-COLOR (0=A, 1=B)</td><td>RESULT-COLOR</td></tr>
+<tr><td>HSL-COLOR</td><td>H-COLOR (0-360), S-COLOR (0-100), L-COLOR (0-100)</td><td>RESULT-COLOR (#hex)</td></tr>
+<tr><td>LIGHTEN-COLOR</td><td>INPUT-COLOR, AMT-COLOR (0-255)</td><td>RESULT-COLOR</td></tr>
+<tr><td>DARKEN-COLOR</td><td>INPUT-COLOR, AMT-COLOR (0-255)</td><td>RESULT-COLOR</td></tr>
+<tr><td>ALPHA-COLOR</td><td>INPUT-COLOR, A-COLOR (0-1)</td><td>RESULT-COLOR (rgba string)</td></tr>
+<tr><td>RAND-COLOR</td><td>—</td><td>RESULT-COLOR (random #hex)</td></tr>
+</table>
+<pre>10 imprt color
+20 asign H-COLOR = 120
+30 asign S-COLOR = 80
+40 asign L-COLOR = 50
+50 calsb HSL-COLOR
+60 print RESULT-COLOR    rem bright green</pre>
+
+<hr>
+
+<!-- ═══ CAMERA ═══ -->
+<h2 class="pkg" id="camera">CAMERA</h2>
+<p>Webcam access. Frames are drawn directly to the GRAPH canvas.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>START-CAMERA</td><td>[ID-CAMERA]</td><td>RESULT-CAMERA (1/0), ERR-CAMERA — async</td></tr>
+<tr><td>SNAP-CAMERA</td><td>[ID-CAMERA], X-CAMERA, Y-CAMERA, W-CAMERA, H-CAMERA</td><td>RESULT-CAMERA (1/0), ERR-CAMERA</td></tr>
+<tr><td>STOP-CAMERA</td><td>[ID-CAMERA]</td><td>ERR-CAMERA</td></tr>
+<tr><td>CHECK-CAMERA</td><td>—</td><td>RESULT-CAMERA (1/0 supported)</td></tr>
+</table>
+<pre>10 imprt camera
+20 imprt graph
+30 calsb GETSCRN-GRAPH
+40 calsb START-CAMERA
+50 while 1 = 1
+60   calsb SNAP-CAMERA
+70 endwh</pre>
+
+<hr>
+
+<!-- ═══ GEOLOC ═══ -->
+<h2 class="pkg" id="geoloc">GEOLOC</h2>
+<p>GPS geolocation. GET-GEOLOC is a one-shot read; use WATCH-GEOLOC + READ-GEOLOC for continuous updates.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>GET-GEOLOC</td><td>—</td><td>LAT-GEOLOC, LON-GEOLOC, ACC-GEOLOC, RESULT-GEOLOC (1/0) — async</td></tr>
+<tr><td>WATCH-GEOLOC</td><td>—</td><td>ERR-GEOLOC (starts background updates)</td></tr>
+<tr><td>READ-GEOLOC</td><td>—</td><td>LAT-GEOLOC, LON-GEOLOC, ACC-GEOLOC, RESULT-GEOLOC</td></tr>
+<tr><td>STOP-GEOLOC</td><td>—</td><td>ERR-GEOLOC (stops WATCH)</td></tr>
+<tr><td>DIST-GEOLOC</td><td>LAT-GEOLOC, LON-GEOLOC, LAT2-GEOLOC, LON2-GEOLOC</td><td>RESULT-GEOLOC (metres)</td></tr>
+<tr><td>CHECK-GEOLOC</td><td>—</td><td>RESULT-GEOLOC (1/0 supported)</td></tr>
+</table>
+<pre>10 imprt geoloc
+20 calsb GET-GEOLOC
+30 print LAT-GEOLOC
+40 print LON-GEOLOC</pre>
+
+<hr>
+
+<!-- ═══ NOTIFY ═══ -->
+<h2 class="pkg" id="notify">NOTIFY</h2>
+<p>Browser push notifications. Must call REQUEST-NOTIFY first; user must grant permission.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>REQUEST-NOTIFY</td><td>—</td><td>RESULT-NOTIFY (1=granted), ERR-NOTIFY — async</td></tr>
+<tr><td>SEND-NOTIFY</td><td>TITLE-NOTIFY, MSG-NOTIFY, [ICON-NOTIFY]</td><td>ERR-NOTIFY</td></tr>
+<tr><td>CHECK-NOTIFY</td><td>—</td><td>RESULT-NOTIFY (1/0), STATUS-NOTIFY (default/denied/granted)</td></tr>
+</table>
+<pre>10 imprt notify
+20 calsb REQUEST-NOTIFY
+30 asign TITLE-NOTIFY = "Spark"
+40 asign MSG-NOTIFY = "Your program finished!"
+50 calsb SEND-NOTIFY</pre>
+
+<hr>
+
+<!-- ═══ HISTORY ═══ -->
+<h2 class="pkg" id="history">HISTORY</h2>
+<p>In-memory undo/redo stack. Push and pop string snapshots of your program state.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>PUSH-HISTORY</td><td>DATA-HISTORY</td><td>N-HISTORY (stack size)</td></tr>
+<tr><td>POP-HISTORY</td><td>—</td><td>RESULT-HISTORY, N-HISTORY</td></tr>
+<tr><td>PEEK-HISTORY</td><td>—</td><td>RESULT-HISTORY (no pop)</td></tr>
+<tr><td>LEN-HISTORY</td><td>—</td><td>RESULT-HISTORY (stack size)</td></tr>
+<tr><td>CLR-HISTORY</td><td>—</td><td>—</td></tr>
+<tr><td>BACK-HISTORY</td><td>—</td><td>ERR-HISTORY (triggers browser back)</td></tr>
+</table>
+<pre>10 imprt history
+20 asign DATA-HISTORY = "state1"
+30 calsb PUSH-HISTORY
+40 asign DATA-HISTORY = "state2"
+50 calsb PUSH-HISTORY
+60 calsb POP-HISTORY
+70 print RESULT-HISTORY    rem state2</pre>
+
+<hr>
+
+<!-- ═══ USER PACKAGES ═══ -->
+
+<h2 id="spark">EVAL-Spark / COMPILE-Spark</h2>
+<p>A package for running or compiling Spark code from within a running Spark program. Requires <code>IMPRT Spark</code>. Enables code generation, metaprogramming, and self-modifying programs.</p>
+<table>
+<tr><th>VARIABLE</th><th>PURPOSE</th></tr>
+<tr><td>CODE-SPARK</td><td>Spark source code to run or compile. Use <code>|</code> as line separator.</td></tr>
+<tr><td>RESULT-SPARK</td><td>Compiled JavaScript output (from COMPILE-Spark)</td></tr>
+<tr><td>ERR-SPARK</td><td>Error message, empty if ok</td></tr>
+</table>
+<table>
+<tr><th>CALL</th><th>PURPOSE</th></tr>
+<tr><td>CALSB EVAL-Spark</td><td>Compile and immediately run CODE-SPARK. Output goes to the Spark output panel.</td></tr>
+<tr><td>CALSB COMPILE-Spark</td><td>Compile CODE-SPARK to a JavaScript string, stored in RESULT-SPARK. Does not run it.</td></tr>
+</table>
+<pre>rem run Spark code at runtime
+10 IMPRT Spark
+20 ASIGN CODE-SPARK = "10 PRINT hello|20 PRINT world|30 END"
+30 CALSB EVAL-Spark
+40 PRINT ERR-SPARK
+
+rem compile to JS and inspect the output
+50 CALSB COMPILE-Spark
+60 PRINT RESULT-SPARK</pre>
+<div class="note">Variable names are always uppercased by the interpreter. Use CODE-SPARK, RESULT-SPARK, ERR-SPARK — not CODE-Spark etc.</div>
+<div class="note">COMPILE-Spark produces raw JavaScript — not a full HTML file. The output is a self-contained async JS block suitable for embedding or execution via <code>new Function()</code>.</div>
+<hr>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- NEW PACKAGES v2.0                               -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<!-- ═══ TOUCH ═══ -->
+<h2 class="pkg" id="touch">TOUCH</h2>
+<p>On-screen virtual joystick with tap detection. Left half of screen = joystick, right half = tap/shoot. Also responds to WASD/arrow keys and spacebar on desktop.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-TOUCH</td><td>—</td><td>Registers touch/mouse/keyboard listeners</td></tr>
+<tr><td>READ-TOUCH</td><td>—</td><td>DX-TOUCH, DY-TOUCH (-60..60), ACT-TOUCH (1/0), TAP-TOUCH (1/0 right side)</td></tr>
+<tr><td>DRAWJOY-TOUCH</td><td>[X-TOUCH, Y-TOUCH position]</td><td>Draws translucent joystick overlay</td></tr>
+<tr><td>CHECK-TOUCH</td><td>—</td><td>RESULT-TOUCH (1 if initialized)</td></tr>
+</table>
+<pre>10 IMPRT GRAPH
+20 IMPRT TOUCH
+30 CALSB GETSCRN-GRAPH
+40 CALSB INIT-TOUCH
+50 CALSB READ-TOUCH
+60 PRINT "DX=" + DX-TOUCH + " TAP=" + TAP-TOUCH
+70 CALSB DRAWJOY-TOUCH
+80 CALSB FLIP-GRAPH
+90 SYNC
+100 GOTO 50</pre>
+
+<hr>
+
+<!-- ═══ MOVE2D ═══ -->
+<h2 class="pkg" id="move2d">MOVE2D</h2>
+<p>First-person movement with wall collision for RAYCAST maps. Reads TOUCH joystick for JOY-MOVE2D. Requires RAYCAST and TOUCH to be imported.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>FWD-MOVE2D</td><td>SPEED-MOVE2D</td><td>Updates CX/CY-RAYCAST</td></tr>
+<tr><td>BACK-MOVE2D</td><td>SPEED-MOVE2D</td><td>Updates CX/CY-RAYCAST</td></tr>
+<tr><td>STRAFEL-MOVE2D</td><td>SPEED-MOVE2D</td><td>Strafe left</td></tr>
+<tr><td>STRAFER-MOVE2D</td><td>SPEED-MOVE2D</td><td>Strafe right</td></tr>
+<tr><td>TURNBY-MOVE2D</td><td>DEG-MOVE2D</td><td>Updates CANG-RAYCAST</td></tr>
+<tr><td>JOY-MOVE2D</td><td>DX/DY-TOUCH, TSPEED-MOVE2D</td><td>Joystick-driven move + turn</td></tr>
+<tr><td>MINIMAP-MOVE2D</td><td>SZ-MOVE2D (pixel size)</td><td>Draws minimap in top-right corner</td></tr>
+</table>
+<div class="note">Variables: SPEED-MOVE2D (default 0.07), TSPEED-MOVE2D (turn speed, default 3.5), SZ-MOVE2D (minimap cell size, default 4), DEG-MOVE2D (turn degrees, default 3).</div>
+
+<hr>
+
+<!-- ═══ ENTITY ═══ -->
+<h2 class="pkg" id="entity">ENTITY</h2>
+<p>Game entities (enemies/NPCs) for RAYCAST worlds. Supports up to 16 entities with AI chase, patrol, line-of-sight damage, and hit detection. Entities render as SPRITE billboards.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-ENTITY</td><td>—</td><td>Creates 16-slot entity pool</td></tr>
+<tr><td>SET-ENTITY</td><td>IDX, X, Y, HP, R/G/B, TAG, SPEED, CHASE, CHASEDIST, DMG</td><td>ERR-ENTITY</td></tr>
+<tr><td>SPAWN-ENTITY</td><td>MINDIST-ENTITY</td><td>X-ENTITY, Y-ENTITY (random open cell), ERR-ENTITY</td></tr>
+<tr><td>TICK-ENTITY</td><td>—</td><td>DMG-ENTITY (total damage to player), ALIVE-ENTITY</td></tr>
+<tr><td>HIT-ENTITY</td><td>DMG-ENTITY</td><td>RESULT-ENTITY (idx or -1), KILLED-ENTITY, HP-ENTITY, TAG-ENTITY, DIST-ENTITY</td></tr>
+<tr><td>NEAR-ENTITY</td><td>—</td><td>RESULT-ENTITY (nearest idx), DIST-ENTITY, TAG-ENTITY</td></tr>
+<tr><td>COUNT-ENTITY</td><td>—</td><td>ALIVE-ENTITY, TOTAL-ENTITY</td></tr>
+<tr><td>KILL-ENTITY</td><td>IDX-ENTITY</td><td>—</td></tr>
+<tr><td>HPBAR-ENTITY</td><td>—</td><td>Draws HP bars above visible entities</td></tr>
+</table>
+<div class="note">HIT-ENTITY uses the RAYCAST z-buffer and line-of-sight — entities behind walls cannot be hit. CHASE-ENTITY=1 makes entities pursue the player within CHASEDIST-ENTITY tiles.</div>
+
+<hr>
+
+<!-- ═══ SCENE ═══ -->
+<h2 class="pkg" id="scene">SCENE</h2>
+<p>Game state/scene manager with a stack for push/pop transitions.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-SCENE</td><td>SCENE-SCENE</td><td>Sets initial scene</td></tr>
+<tr><td>SET-SCENE</td><td>SCENE-SCENE</td><td>Changes current scene</td></tr>
+<tr><td>GET-SCENE</td><td>—</td><td>SCENE-SCENE (current scene name)</td></tr>
+<tr><td>PUSH-SCENE</td><td>SCENE-SCENE</td><td>Pushes current, sets new</td></tr>
+<tr><td>POP-SCENE</td><td>—</td><td>SCENE-SCENE (restored from stack)</td></tr>
+<tr><td>IS-SCENE</td><td>SCENE-SCENE</td><td>RESULT-SCENE (1 if match)</td></tr>
+</table>
+<pre>10 ASIGN SCENE-SCENE = "title"
+20 CALSB INIT-SCENE
+30 CALSB GET-SCENE
+40 IF SCENE-SCENE = "title" THEN CALSB TITLESCREEN
+50 IF SCENE-SCENE = "play" THEN CALSB GAMELOOP</pre>
+
+<hr>
+
+<!-- ═══ HUD ═══ -->
+<h2 class="pkg" id="hud">HUD</h2>
+<p>Heads-up display overlay — health bar, kill counter, crosshair, alert text, and hint text. Draws on top of GRAPH/RAYCAST output.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>DRAW-HUD</td><td>HP-HUD, MAXHP-HUD, KILLS-HUD, MAXKILLS-HUD, ALERT-HUD, ALERTT-HUD, HINT-HUD</td><td>Draws full HUD overlay</td></tr>
+</table>
+<div class="note">Variables: BX/BY/BW/BH-HUD (health bar position/size), CS-HUD (crosshair size). ALERTT-HUD is the countdown timer — decrement each frame, alert fades when it reaches 0.</div>
+<pre>190 ASIGN HP-HUD = PL-HP
+200 ASIGN MAXHP-HUD = 100
+210 ASIGN KILLS-HUD = PL-KILLS
+220 ASIGN MAXKILLS-HUD = 6
+230 CALSB DRAW-HUD</pre>
+
+<hr>
+
+<!-- ═══ FULLSCR ═══ -->
+<h2 class="pkg" id="fullscr-pkg">FULLSCR</h2>
+<p>Fullscreen mode control. MAX-FULLSCR expands the canvas panel — use it before GETSCRN-GRAPH for correct dimensions.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>ENTER-FULLSCR</td><td>—</td><td>Requests browser fullscreen</td></tr>
+<tr><td>EXIT-FULLSCR</td><td>—</td><td>Exits fullscreen</td></tr>
+<tr><td>TOGGLE-FULLSCR</td><td>—</td><td>Toggles fullscreen</td></tr>
+<tr><td>MAX-FULLSCR</td><td>—</td><td>RESULT-FULLSCR. Expands canvas to 90% screen</td></tr>
+<tr><td>CHECK-FULLSCR</td><td>—</td><td>RESULT-FULLSCR (1 if currently fullscreen)</td></tr>
+</table>
+<pre>10 CALSB MAX-FULLSCR
+20 CALSB GETSCRN-GRAPH    rem get correct W/H after expand</pre>
+
+<hr>
+
+<!-- ═══ AI ═══ -->
+<h2 class="pkg" id="ai">AI</h2>
+<p>Call Claude, Gemini, or OpenAI from Spark. Set your API key via the API KEY button or APIKEY-AI variable.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>ASK-AI</td><td>PROMPT-AI, [SYS-AI], [MODEL-AI], [TOKENS-AI], PROVIDER-AI, APIKEY-AI</td><td>RESULT-AI, ERR-AI</td></tr>
+</table>
+<div class="note">PROVIDER-AI: "claude" (default), "gemini", or "openai". Default models: claude-sonnet-4-20250514, gemini-2.0-flash, gpt-4o-mini. TOKENS-AI defaults to 1000.</div>
+<pre>10 IMPRT AI
+20 ASIGN PROVIDER-AI = "claude"
+30 ASIGN PROMPT-AI = "What is 2+2?"
+40 ASIGN TOKENS-AI = 100
+50 CALSB ASK-AI
+60 PRINT RESULT-AI</pre>
+
+<hr>
+
+<!-- ═══ WORKER ═══ -->
+<h2 class="pkg" id="worker">WORKER</h2>
+<p>Inline background tasks using <code>new Function()</code>. CSP-safe (no blob URLs). Worker code receives a fake <code>self</code> with <code>postMessage</code> and <code>onmessage</code>.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>SPAWN-WORKER</td><td>ID-WORKER, CODE-WORKER</td><td>ERR-WORKER</td></tr>
+<tr><td>POST-WORKER</td><td>ID-WORKER, MSG-WORKER</td><td>ERR-WORKER</td></tr>
+<tr><td>RECV-WORKER</td><td>ID-WORKER</td><td>RESULT-WORKER, AVAIL-WORKER, ERR-WORKER</td></tr>
+<tr><td>STATUS-WORKER</td><td>ID-WORKER</td><td>RESULT-WORKER (running/error/none)</td></tr>
+<tr><td>KILL-WORKER</td><td>ID-WORKER</td><td>ERR-WORKER</td></tr>
+<tr><td>KILLALL-WORKER</td><td>—</td><td>ERR-WORKER</td></tr>
+</table>
+<pre>10 IMPRT WORKER
+20 ASIGN ID-WORKER = "calc"
+30 ASIGN CODE-WORKER = "self.onmessage=function(e){self.postMessage(e.data*2);}"
+40 CALSB SPAWN-WORKER
+50 ASIGN MSG-WORKER = 21
+60 CALSB POST-WORKER
+70 CALSB RECV-WORKER
+80 IF RESULT-WORKER = "" THEN WAIT 50
+90 IF RESULT-WORKER = "" THEN GOTO 70
+100 PRINT "Result: " + RESULT-WORKER</pre>
+
+<hr>
+
+<!-- ═══ LAUNCH ═══ -->
+<h2 class="pkg" id="launch-pkg">LAUNCH</h2>
+<p>Compile the current program and open it in a new browser tab as a standalone HTML app. This is the programmatic equivalent of the EXPORT &gt; APP button.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>RUN-LAUNCH</td><td>—</td><td>Opens compiled app in new tab</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ MULTI ═══ -->
+<h2 class="pkg" id="multi">MULTI</h2>
+<p>Peer-to-peer multiplayer via PeerJS. One player hosts a room, others join by room name. Messages are strings. Loads PeerJS (~50kb) from CDN on first use.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>HOST-MULTI</td><td>[ROOM-MULTI]</td><td>MYID-MULTI, ROOM-MULTI, ERR-MULTI</td></tr>
+<tr><td>JOIN-MULTI</td><td>ROOM-MULTI</td><td>MYID-MULTI, CONN-MULTI (1/0), ERR-MULTI</td></tr>
+<tr><td>SEND-MULTI</td><td>MSG-MULTI, [TO-MULTI "all" or peer id]</td><td>ERR-MULTI</td></tr>
+<tr><td>RECV-MULTI</td><td>—</td><td>MSG-MULTI, FROM-MULTI, NEWMSG-MULTI (1/0)</td></tr>
+<tr><td>STATE-MULTI</td><td>—</td><td>CONN-MULTI, PLAYERS-MULTI, HOST-MULTI (1/0), ROOM-MULTI, MYID-MULTI</td></tr>
+<tr><td>DISC-MULTI</td><td>—</td><td>Disconnects and destroys peer</td></tr>
+</table>
+<div class="note">MULTI currently works in interpreted RUN mode only (no compiled/export support yet). Host creates room ID automatically if ROOM-MULTI is empty.</div>
+
+<hr>
+
+<!-- ═══ AUDIO ═══ -->
+<h2 class="pkg" id="audio-pkg">AUDIO</h2>
+<p>Play MP3/WAV/OGG files by URL. Separate from SOUND (which generates tones). Multiple named tracks supported.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>LOAD-AUDIO</td><td>NAME-AUDIO, SRC-AUDIO (URL)</td><td>ERR-AUDIO</td></tr>
+<tr><td>PLAY-AUDIO</td><td>NAME-AUDIO, [LOOP-AUDIO 1/0]</td><td>ERR-AUDIO</td></tr>
+<tr><td>PAUSE-AUDIO</td><td>NAME-AUDIO</td><td>—</td></tr>
+<tr><td>STOP-AUDIO</td><td>NAME-AUDIO</td><td>—</td></tr>
+<tr><td>VOL-AUDIO</td><td>NAME-AUDIO, VOL-AUDIO (0-1)</td><td>—</td></tr>
+<tr><td>STATE-AUDIO</td><td>NAME-AUDIO</td><td>RESULT-AUDIO (playing/paused/stopped)</td></tr>
+<tr><td>FREE-AUDIO</td><td>NAME-AUDIO</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ SPATIAL ═══ -->
+<h2 class="pkg" id="spatial">SPATIAL</h2>
+<p>3D positional audio using Web Audio API. Place sounds in 3D space relative to a listener position.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-SPATIAL</td><td>—</td><td>Creates audio context</td></tr>
+<tr><td>LISTEN-SPATIAL</td><td>X/Y/Z-SPATIAL</td><td>Sets listener position</td></tr>
+<tr><td>LOAD-SPATIAL</td><td>NAME-SPATIAL, SRC-SPATIAL</td><td>ERR-SPATIAL</td></tr>
+<tr><td>PLAY-SPATIAL</td><td>NAME-SPATIAL, X/Y/Z-SPATIAL</td><td>ERR-SPATIAL</td></tr>
+<tr><td>MOVE-SPATIAL</td><td>NAME-SPATIAL, X/Y/Z-SPATIAL</td><td>—</td></tr>
+<tr><td>STOP-SPATIAL</td><td>NAME-SPATIAL</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ DSTRUCT ═══ -->
+<h2 class="pkg" id="dstruct">DSTRUCT</h2>
+<p>Typed data structures — Sets, Maps, Queues, and Stacks. Each collection is named.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>NSET-DSTRUCT</td><td>NAME-DSTRUCT</td><td>Create a Set</td></tr>
+<tr><td>SADD/SDEL/SHAS/SLIST/SSIZE/SCLEAR</td><td>NAME, VAL</td><td>RESULT-DSTRUCT</td></tr>
+<tr><td>NMAP-DSTRUCT</td><td>NAME-DSTRUCT</td><td>Create a Map</td></tr>
+<tr><td>MSET/MGET/MDEL/MHAS/MKEYS/MVALS</td><td>NAME, KEY, VAL</td><td>RESULT-DSTRUCT</td></tr>
+<tr><td>NQUE-DSTRUCT</td><td>NAME-DSTRUCT</td><td>Create a Queue (FIFO)</td></tr>
+<tr><td>ENQUE/DEQUE/PEEK</td><td>NAME, VAL</td><td>RESULT-DSTRUCT</td></tr>
+<tr><td>NSTK-DSTRUCT</td><td>NAME-DSTRUCT</td><td>Create a Stack (LIFO)</td></tr>
+<tr><td>PUSH/POP/STKTOP</td><td>NAME, VAL</td><td>RESULT-DSTRUCT</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ PHYS ═══ -->
+<h2 class="pkg" id="phys">PHYS</h2>
+<p>2D physics via Matter.js. Create rigid bodies, apply forces, detect collisions. Loads Matter.js from CDN on first use.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-PHYS</td><td>—</td><td>Creates physics world</td></tr>
+<tr><td>RECT-PHYS</td><td>ID, X, Y, W, H</td><td>ERR-PHYS</td></tr>
+<tr><td>CIRC-PHYS</td><td>ID, X, Y, RAD</td><td>ERR-PHYS</td></tr>
+<tr><td>FORCE-PHYS</td><td>ID, FX, FY</td><td>—</td></tr>
+<tr><td>GET-PHYS</td><td>ID</td><td>X/Y/ANG/VX/VY-PHYS</td></tr>
+<tr><td>SETPOS/SETVEL-PHYS</td><td>ID, X, Y</td><td>—</td></tr>
+<tr><td>STEP-PHYS</td><td>—</td><td>Advances simulation one frame</td></tr>
+<tr><td>HITCK-PHYS</td><td>A, B (IDs)</td><td>RESULT-PHYS (1/0)</td></tr>
+<tr><td>REMOVE/CLEAR-PHYS</td><td>[ID]</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ TWEEN ═══ -->
+<h2 class="pkg" id="tween">TWEEN</h2>
+<p>Animation tweening with 12 easing functions, chaining, grouping, yoyo, and repeat.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>START-TWEEN</td><td>ID, FROM, TO, DUR, [EASE]</td><td>ERR-TWEEN</td></tr>
+<tr><td>TICK-TWEEN</td><td>ID</td><td>RESULT-TWEEN (current value), DONE-TWEEN (1/0)</td></tr>
+<tr><td>STOP-TWEEN</td><td>ID</td><td>—</td></tr>
+<tr><td>EASE-TWEEN</td><td>T (0-1), [EASE name]</td><td>RESULT-TWEEN</td></tr>
+<tr><td>LERP-TWEEN</td><td>A, B, T</td><td>RESULT-TWEEN</td></tr>
+<tr><td>SPRING-TWEEN</td><td>VAL, TARGET, VEL, STIFF, DAMP</td><td>RESULT-TWEEN, VEL-TWEEN</td></tr>
+<tr><td>SETCHAIN-TWEEN</td><td>ID, NEXT-ID</td><td>—</td></tr>
+<tr><td>GROUP-TWEEN</td><td>IDS (comma-separated)</td><td>Tick all at once</td></tr>
+<tr><td>CLR-TWEEN</td><td>—</td><td>Remove all tweens</td></tr>
+</table>
+<div class="note">Easings: linear, easeIn, easeOut, easeInOut, quadIn, quadOut, cubicIn, cubicOut, bounceIn, bounceOut, elasticIn, elasticOut.</div>
+
+<hr>
+
+<!-- ═══ PART ═══ -->
+<h2 class="pkg" id="part">PART</h2>
+<p>Particle emitters with physics, gravity, fade, and lifecycle.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>EMIT-PART</td><td>ID, X, Y, COUNT, SPREAD, SPEED, LIFE, R/G/B</td><td>—</td></tr>
+<tr><td>STEP-PART</td><td>—</td><td>Advances all particles</td></tr>
+<tr><td>DRAW-PART</td><td>—</td><td>Renders particles to canvas</td></tr>
+<tr><td>ALIVE-PART</td><td>ID</td><td>RESULT-PART (count of live particles)</td></tr>
+<tr><td>CLEAR-PART</td><td>[ID]</td><td>Remove all particles</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ PATH ═══ -->
+<h2 class="pkg" id="path">PATH</h2>
+<p>A* pathfinding on a 2D grid. Set up a grid, mark walls, then find paths.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>GRID-PATH</td><td>W-PATH, H-PATH</td><td>Creates grid</td></tr>
+<tr><td>WALL-PATH</td><td>X-PATH, Y-PATH</td><td>Marks cell as wall</td></tr>
+<tr><td>CLRW-PATH</td><td>X-PATH, Y-PATH</td><td>Clears wall</td></tr>
+<tr><td>FIND-PATH</td><td>X1, Y1, X2, Y2</td><td>RESULT-PATH (length), ERR-PATH</td></tr>
+<tr><td>NEXT-PATH</td><td>N-PATH (step index)</td><td>X-PATH, Y-PATH (coordinates of step N)</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ GINPUT ═══ -->
+<h2 class="pkg" id="ginput">GINPUT</h2>
+<p>Gamepad, swipe, pinch, and gesture input.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-GINPUT</td><td>—</td><td>Registers gesture listeners</td></tr>
+<tr><td>PAD-GINPUT</td><td>IDX</td><td>AX1/AY1/AX2/AY2 (axes), BTNS (bitmask)</td></tr>
+<tr><td>SWIPE-GINPUT</td><td>—</td><td>DIR (up/down/left/right), DIST</td></tr>
+<tr><td>PINCH-GINPUT</td><td>—</td><td>SCALE-GINPUT</td></tr>
+<tr><td>TAP-GINPUT</td><td>—</td><td>COUNT (single/double/triple tap)</td></tr>
+<tr><td>CLR-GINPUT</td><td>—</td><td>Resets gesture state</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ PROC ═══ -->
+<h2 class="pkg" id="proc">PROC</h2>
+<p>Procedural generation — Perlin noise, seeded random, terrain heightmaps, and dungeon generation.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>SEED-PROC</td><td>SEED-PROC</td><td>Sets deterministic seed</td></tr>
+<tr><td>RAND-PROC</td><td>—</td><td>RESULT-PROC (0-1 seeded random)</td></tr>
+<tr><td>NOISE-PROC</td><td>X-PROC, Y-PROC</td><td>RESULT-PROC (-1 to 1 Perlin noise)</td></tr>
+<tr><td>TERR-PROC</td><td>W, H, SCALE</td><td>MAP-PROC (heightmap string)</td></tr>
+<tr><td>DUNG-PROC</td><td>W, H, ROOMS</td><td>MAP-PROC (0/1 dungeon string)</td></tr>
+<tr><td>FILL-PROC</td><td>MAP, X, Y, FROM, TO</td><td>MAP-PROC (flood-filled)</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ ANIM ═══ -->
+<h2 class="pkg" id="anim">ANIM</h2>
+<p>Sprite sheet frame animation on top of SPRITE/GRAPH. Define animations from sprite sheets, then play/tick them.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>NEW-ANIM</td><td>ID, SHEET (image name), FW, FH (frame size), FPS</td><td>ERR-ANIM</td></tr>
+<tr><td>SEQ-ANIM</td><td>ID, FRAMES (comma-separated indices)</td><td>—</td></tr>
+<tr><td>PLAY-ANIM</td><td>ID, [LOOP 1/0]</td><td>—</td></tr>
+<tr><td>STOP-ANIM</td><td>ID</td><td>—</td></tr>
+<tr><td>TICK-ANIM</td><td>ID</td><td>FRAME-ANIM (current frame), DONE-ANIM</td></tr>
+<tr><td>DRAW-ANIM</td><td>ID, X, Y</td><td>Draws current frame to canvas</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ CURVE ═══ -->
+<h2 class="pkg" id="curve">CURVE</h2>
+<p>Custom easing curves, keyframe timelines, and animation blending.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>EVAL-CURVE</td><td>NAME, T (0-1)</td><td>RESULT-CURVE</td></tr>
+<tr><td>SAMPLE-CURVE</td><td>NAME, N (samples)</td><td>RESULT-CURVE (comma-separated)</td></tr>
+<tr><td>KF-CURVE</td><td>ID, TIME, VAL</td><td>Add keyframe to timeline</td></tr>
+<tr><td>BLEND-CURVE</td><td>A, B, T</td><td>RESULT-CURVE (blended value)</td></tr>
+<tr><td>CLR-CURVE</td><td>—</td><td>Clear all curves</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ CLOUD ═══ -->
+<h2 class="pkg" id="cloud">CLOUD</h2>
+<p>Cloud save/load via JSONbin.io or a custom REST endpoint. Set API key with SETKEY-CLOUD.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>SETKEY-CLOUD</td><td>KEY-CLOUD</td><td>Stores API key</td></tr>
+<tr><td>SAVE-CLOUD</td><td>ID-CLOUD, DATA-CLOUD</td><td>RESULT-CLOUD, ERR-CLOUD</td></tr>
+<tr><td>LOAD-CLOUD</td><td>ID-CLOUD</td><td>RESULT-CLOUD (JSON string), ERR-CLOUD</td></tr>
+<tr><td>DEL-CLOUD</td><td>ID-CLOUD</td><td>ERR-CLOUD</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ PERF ═══ -->
+<h2 class="pkg" id="perf">PERF</h2>
+<p>Performance profiling — frame time, FPS, memory usage, and named timers.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>FRAME-PERF</td><td>—</td><td>FPS-PERF, DELTA-PERF (ms)</td></tr>
+<tr><td>START-PERF</td><td>NAME-PERF</td><td>Starts named timer</td></tr>
+<tr><td>STOP-PERF</td><td>NAME-PERF</td><td>RESULT-PERF (elapsed ms)</td></tr>
+<tr><td>MARK-PERF</td><td>NAME-PERF</td><td>Stores timestamp</td></tr>
+<tr><td>SINCE-PERF</td><td>NAME-PERF</td><td>RESULT-PERF (ms since mark)</td></tr>
+<tr><td>MEM-PERF</td><td>—</td><td>RESULT-PERF (heap MB, Chrome only)</td></tr>
+<tr><td>REPORT-PERF</td><td>—</td><td>RESULT-PERF (formatted summary)</td></tr>
+<tr><td>CLR-PERF</td><td>—</td><td>Reset all timers</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ VIBRATE ═══ -->
+<h2 class="pkg" id="vibrate">VIBRATE</h2>
+<p>Haptic vibration feedback on mobile devices. Single buzz or pattern. No-op on desktop.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>BUZZ-VIBRATE</td><td>MS-VIBRATE (duration ms, default 200)</td><td>ERR-VIBRATE</td></tr>
+<tr><td>PATTERN-VIBRATE</td><td>PAT-VIBRATE (CSV: vibrate,pause,vibrate...)</td><td>ERR-VIBRATE</td></tr>
+<tr><td>STOP-VIBRATE</td><td>—</td><td>Cancels vibration</td></tr>
+<tr><td>CHECK-VIBRATE</td><td>—</td><td>RESULT-VIBRATE (1/0 supported)</td></tr>
+</table>
+<pre>10 IMPRT VIBRATE
+20 ASIGN MS-VIBRATE = 300
+30 CALSB BUZZ-VIBRATE
+40 WAIT 500
+50 ASIGN PAT-VIBRATE = "100,50,100,50,200"
+60 CALSB PATTERN-VIBRATE</pre>
+
+<hr>
+
+<!-- ═══ SPEECH ═══ -->
+<h2 class="pkg" id="speech">SPEECH</h2>
+<p>Text-to-speech (TTS) and speech-to-text (STT) via Web Speech API. TTS works on most browsers. STT requires Chrome/Edge.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>SAY-SPEECH</td><td>TEXT-SPEECH, [LANG-SPEECH], [RATE-SPEECH 0.1-10], [PITCH-SPEECH 0-2], [VOL-SPEECH 0-1]</td><td>DONE-SPEECH (1 when finished), ERR-SPEECH</td></tr>
+<tr><td>SHUTUP-SPEECH</td><td>—</td><td>Stops speaking</td></tr>
+<tr><td>VOICES-SPEECH</td><td>—</td><td>RESULT-SPEECH (CSV of voice names), N-SPEECH</td></tr>
+<tr><td>LISTEN-SPEECH</td><td>[LANG-SPEECH], [TIMEOUT-SPEECH ms]</td><td>RESULT-SPEECH (transcript), ERR-SPEECH</td></tr>
+<tr><td>CHECK-SPEECH</td><td>—</td><td>RESULT-SPEECH (1/0 TTS), LISTEN-SPEECH (1/0 STT)</td></tr>
+</table>
+<pre>10 IMPRT SPEECH
+20 ASIGN TEXT-SPEECH = "Hello from Spark"
+30 CALSB SAY-SPEECH
+40 PRINT "Speaking..."</pre>
+
+<hr>
+
+<!-- ═══ ORIENT ═══ -->
+<h2 class="pkg" id="orient">ORIENT</h2>
+<p>Device orientation (compass/tilt) and motion (accelerometer). Requires HTTPS. On iOS 13+ prompts for permission automatically.</p>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>INIT-ORIENT</td><td>—</td><td>Requests permission, starts listeners. ERR-ORIENT</td></tr>
+<tr><td>READ-ORIENT</td><td>—</td><td>ALPHA-ORIENT (compass 0-360), BETA-ORIENT (front-back -180..180), GAMMA-ORIENT (left-right -90..90), AX/AY/AZ-ORIENT (accelerometer)</td></tr>
+<tr><td>TILT-ORIENT</td><td>[DEAD-ORIENT deadzone degrees, default 5]</td><td>TX-ORIENT, TY-ORIENT (filtered tilt values)</td></tr>
+<tr><td>CHECK-ORIENT</td><td>—</td><td>RESULT-ORIENT (1/0 supported)</td></tr>
+</table>
+<pre>10 IMPRT GRAPH
+20 IMPRT ORIENT
+30 CALSB GETSCRN-GRAPH
+40 CALSB INIT-ORIENT
+50 CALSB READ-ORIENT
+60 CALSB TILT-ORIENT
+70 CALSB CLEAR-GRAPH
+80 ASIGN TXT-GRAPH = "Tilt: " + TX-ORIENT + "," + TY-ORIENT
+90 ASIGN X-GRAPH = 20 : ASIGN Y-GRAPH = 30
+100 CALSB TEXT-GRAPH
+110 CALSB FLIP-GRAPH
+120 SYNC
+130 GOTO 50</pre>
+
+<hr>
+
+<!-- ═══ CHART ═══ -->
+<h2 class="pkg" id="chart">CHART</h2>
+<p>Data visualization — 2D charts drawn to the GRAPH canvas, plus 3D bar charts via Three.js. All charts auto-scale to fit the data. Supports custom colors, titles, and positioning.</p>
+
+<h3>2D Charts (canvas)</h3>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>BAR-CHART</td><td>DATA-CHART (CSV values), LABELS-CHART (CSV), [COLORS-CHART], [TITLE-CHART], X/Y/W/H-CHART</td><td>ERR-CHART</td></tr>
+<tr><td>HBAR-CHART</td><td>Same as BAR — draws horizontal bars</td><td>ERR-CHART</td></tr>
+<tr><td>LINE-CHART</td><td>DATA-CHART, [LABELS-CHART], [COLOR-CHART hex], [FILL-CHART 1/0], X/Y/W/H-CHART, [TITLE-CHART]</td><td>ERR-CHART</td></tr>
+<tr><td>PIE-CHART</td><td>DATA-CHART, [LABELS-CHART], [COLORS-CHART], X-CHART (cx), Y-CHART (cy), R-CHART (radius), [DONUT-CHART 1/0], [TITLE-CHART]</td><td>ERR-CHART</td></tr>
+<tr><td>SCATTER-CHART</td><td>DATA-CHART (X values CSV), DATA2-CHART (Y values CSV), [COLOR-CHART], [SIZE-CHART dot size], X/Y/W/H-CHART, [TITLE-CHART]</td><td>ERR-CHART</td></tr>
+</table>
+
+<h3>3D Charts (Three.js)</h3>
+<table>
+<tr><th>FUNCTION</th><th>INPUTS</th><th>OUTPUTS</th></tr>
+<tr><td>BAR3D-CHART</td><td>DATA-CHART, [COLORS-CHART], [GAP-CHART spacing], [BARW-CHART width]. Requires THREED initialized.</td><td>ERR-CHART</td></tr>
+<tr><td>CLR-CHART</td><td>—</td><td>Removes 3D chart meshes from scene</td></tr>
+</table>
+
+<div class="note">Data is always CSV strings: <code>ASIGN DATA-CHART = "85,42,67,93"</code>. Colors default to a 14-color palette if COLORS-CHART is empty. All 2D charts render to the double-buffer canvas — call FLIP-GRAPH after drawing.</div>
+
+<h3>Bar chart example</h3>
+<pre>10 IMPRT GRAPH
+20 IMPRT CHART
+30 CALSB GETSCRN-GRAPH
+40 CALSB CLEAR-GRAPH
+50 ASIGN DATA-CHART = "85,42,67,93,51"
+60 ASIGN LABELS-CHART = "Mon,Tue,Wed,Thu,Fri"
+70 ASIGN TITLE-CHART = "Weekly Sales"
+80 ASIGN X-CHART = 20
+90 ASIGN Y-CHART = 20
+100 ASIGN W-CHART = W-GRAPH - 40
+110 ASIGN H-CHART = H-GRAPH - 60
+120 CALSB BAR-CHART
+130 CALSB FLIP-GRAPH
+140 END</pre>
+
+<h3>Pie + donut example</h3>
+<pre>10 IMPRT GRAPH
+20 IMPRT CHART
+30 CALSB GETSCRN-GRAPH
+40 CALSB CLEAR-GRAPH
+50 ASIGN DATA-CHART = "35,25,20,15,5"
+60 ASIGN LABELS-CHART = "A,B,C,D,E"
+70 ASIGN X-CHART = W-GRAPH / 2
+80 ASIGN Y-CHART = H-GRAPH / 2
+90 ASIGN R-CHART = 80
+100 ASIGN DONUT-CHART = 1
+110 CALSB PIE-CHART
+120 CALSB FLIP-GRAPH</pre>
+
+<h3>3D rotating bar chart</h3>
+<pre>10 IMPRT GRAPH
+20 IMPRT THREED
+30 IMPRT CHART
+40 CALSB GETSCRN-GRAPH
+50 CALSB INIT-THREED
+60 ASIGN DATA-CHART = "85,42,67,93,51"
+70 CALSB BAR3D-CHART
+80 rem camera orbits automatically
+90 CALSB RENDER-THREED
+100 SYNC
+110 GOTO 90</pre>
+
+<hr>
+
+<h2 id="user-pkgs">USER PACKAGES</h2>
+<p>Define reusable packages in the PACKAGES tab using FUNC / ENDFUNC blocks. Export with the PKG button to share.</p>
+<pre>FUNC CLAMP
+  rem clamp INPUT-UTILS between LO-UTILS and HI-UTILS
+  asign A-MATH = INPUT-UTILS
+  asign B-MATH = LO-UTILS
+  calsb MAX-MATH
+  asign A-MATH = RESULT-MATH
+  asign B-MATH = HI-UTILS
+  calsb MIN-MATH
+  asign RESULT-UTILS = RESULT-MATH
+ENDFUNC
+
+rem usage:
+10 imprt math
+20 imprt utils
+30 asign INPUT-UTILS = HP
+40 asign LO-UTILS = 0
+41 asign HI-UTILS = 100
+50 calsb CLAMP-UTILS
+60 asign HP = RESULT-UTILS</pre>
+
+<hr>
+<h2 id="pwa">INSTALLING Spark</h2>
+<p>Spark is a Progressive Web App — installs on your phone or desktop like a native app, works fully offline after first load, runs without a browser address bar.</p>
+<table>
+<tr><th>PLATFORM</th><th>HOW TO INSTALL</th></tr>
+<tr><td>Android (Chrome)</td><td>Chrome shows an "Add to Home Screen" banner or install icon in the address bar. Tap it.</td></tr>
+<tr><td>iOS (Safari)</td><td>Tap Share → "Add to Home Screen". Opens standalone with no browser chrome.</td></tr>
+<tr><td>Desktop (Chrome)</td><td>Install icon appears in address bar. Click it. Opens as a standalone window.</td></tr>
+</table>
+<div class="note">Spark shows an INSTALL button in its own toolbar when the browser offers an install prompt. Once installed, Spark works completely offline.</div>
+<hr>
+<h2 id="export">EXPORT OPTIONS</h2>
+<p>Spark has four export buttons in the top menu, each producing a different kind of file.</p>
+<table>
+<tr><th>BUTTON</th><th>WHAT IT PRODUCES</th><th>USE WHEN</th></tr>
+<tr><td>⬇ APP</td><td>Standalone compiled HTML file. No Spark editor, no source code visible. Just your program running — canvas, DOM, packages and all. Works offline, shareable, installable as a PWA.</td><td>You want to ship a finished app or game to users</td></tr>
+<tr><td>⬇ CODE</td><td>Full Spark editor with your source code baked in. Recipient opens it and sees the editor with your windows ready to run or edit.</td><td>You want to share code for others to read, remix, or learn from</td></tr>
+<tr><td>⬇ PKG</td><td>A user package installer file. Recipient clicks INSTALL in their editor to add your package to their Spark.</td><td>You've written a reusable package and want to distribute it</td></tr>
+<tr><td>⬇ SELF</td><td>A self-hosted version of Spark itself. Compiles the Bootstrap interpreter windows to JavaScript and bakes the result into a new spark.html. The output is a fully working Spark editor that runs programs via compiled JS instead of the interpreted Bootstrap — same features, smaller and faster.</td><td>You want a leaner standalone Spark, or are exploring self-hosting</td></tr>
+</table>
+
+<h3>APP in detail</h3>
+<p>The APP export compiles your Spark to JavaScript and wraps it in a minimal HTML page — just a canvas element and your code. The Spark editor UI is completely stripped. The output is a single self-contained HTML file anyone can open in a browser or install as a web app.</p>
+<p>For DOM-based apps, the canvas fills the full window and the DOM overlay attaches to the body. <code>MAX-FULLSCR</code> is a no-op in exported apps since the canvas is already full-screen. Use <code>GETSCRN-GRAPH</code> to get exact window dimensions after the canvas loads.</p>
+
+<h3>CODE in detail</h3>
+<p>CODE bakes your window contents into a fresh copy of the Spark editor. The recipient gets the full IDE with your program pre-loaded — they can run it, edit it, add windows, or study how it works. This is how Spark programs are shared as open source.</p>
+
+<hr>
+<h2 id="philosophy">PHILOSOPHY</h2>
+<p>Spark is built around user consent and hardware safety. Every package that touches hardware, the network, or device sensors asks first — and explains exactly what it will and will not do.</p>
+<table>
+<tr><th>PRINCIPLE</th><th>MEANING</th></tr>
+<tr><td>Nothing without asking</td><td>Every sensitive action uses CONFIRM before proceeding</td></tr>
+<tr><td>Will / Will Not</td><td>Every CONFIRM shows both what it does and what it does not do</td></tr>
+<tr><td>Frozen hardware packages</td><td>SERIAL and hardware packages cannot be auto-updated — human reviewed only</td></tr>
+<tr><td>Files are the security model</td><td>You see exactly what you open — no hidden updates, no remote code</td></tr>
+<tr><td>Own your tools</td><td>The entire IDE is one HTML file — copy it, host it, modify it</td></tr>
+</table>
+
+<hr>
+<h2 id="example">FULL EXAMPLE — First Person Maze</h2>
+<p>Walk through a maze and find the exit. Uses GRAPH, RAYCAST, INPUT, SOUND, STORE, TIMER.</p>
+<pre>rem -- MAIN
+10 imprt graph
+11 imprt sound
+12 imprt store
+20 calsb GETSCRN-GRAPH
+21 calsb INIT-SOUND
+30 asign KEY-STORE = "besttime"
+40 calsb GET-STORE
+41 asign BEST = RESULT-STORE
+50 gowin GAME
+
+rem -- GAME
+10 imprt graph
+11 imprt input
+12 imprt raycast
+13 imprt timer
+20 calsb INIT-INPUT
+30 asign MAP-RAYCAST = "111111111110000011101010111010101110101011100010111011101010001110101011111000001111111111111111111111"
+40 asign MAPW-RAYCAST = 10
+41 asign MAPH-RAYCAST = 10
+50 asign CX-RAYCAST = 1.5
+51 asign CY-RAYCAST = 1.5
+60 calsb INIT-RAYCAST
+61 calsb START-TIMER
+70 calsb TICK-TIMER
+71 calsb POLL-INPUT
+80 if TCHD-INPUT = 1 then calsb 200
+90 calsb RENDER-RAYCAST
+100 rem HUD
+110 calsb MS-TIMER
+120 asign TXT-GRAPH = "TIME: " + RESULT-TIMER / 1000 + "s"
+130 asign X-GRAPH = 10
+131 asign Y-GRAPH = 24
+132 asign SIZE-GRAPH = 14
+140 calsb TEXT-GRAPH
+150 rem check exit at 8,8
+160 asign INPUT-MATH = CX-RAYCAST
+161 calsb FLOOR-MATH
+162 asign TX = RESULT-MATH
+170 asign INPUT-MATH = CY-RAYCAST
+171 calsb FLOOR-MATH
+172 asign TY = RESULT-MATH
+180 if TX = 8 then if TY = 8 then gowin WIN
+190 wait 16
+191 goto 70
+200 rem movement
+210 asign QW = W-GRAPH / 4
+220 if TCHX-INPUT &lt; QW then calsb TURNL-RAYCAST
+230 if TCHX-INPUT &gt; QW * 3 then calsb TURN-RAYCAST
+240 if TCHX-INPUT &gt; QW then calsb 250
+250 asign HALF = H-GRAPH / 2
+260 if TCHY-INPUT &lt; HALF then calsb MOVE-RAYCAST
+270 if TCHY-INPUT &gt; HALF then calsb BACK-RAYCAST
+280 rturn</pre>
+
+
+<hr>
+<h2 id="gotchas">GOTCHAS</h2>
+
+<h3>Colon chaining spacing matters</h3>
+<p>Colon chaining requires exactly <code> : </code> (space-colon-space). Missing spaces will cause errors or silent failures.</p>
+<pre>rem WRONG — no spaces around colon:
+10 asign X = 1:asign Y = 2
+
+rem RIGHT — space-colon-space:
+10 asign X = 1 : asign Y = 2</pre>
+
+<h3>IF THEN RTURN — interpreter only gotcha</h3>
+<p>In interpreter mode, <code>IF cond THEN RTURN</code> silently fails. Use GOTO + RTURN instead. In compiled mode (RUN button), this works fine.</p>
+<pre>rem SAFE for both modes:
+100 if X = 0 then goto 150
+110 goto 200
+150 rturn
+200 rem ...rest of sub...</pre>
+
+<h3>IF THEN GOTO with fall-through</h3>
+<p>When using <code>IF cond THEN GOTO label</code>, the next line runs if the condition is false. Use ELSE for a cleaner alternative, or add a skip-GOTO after conditional jumps.</p>
+<pre>rem CLEAN — using ELSE:
+100 if DONE = 1 then goto 500 else goto 200
+500 rturn
+200 rem ...loop body...
+
+rem ALSO WORKS — explicit skip:
+100 if DONE = 1 then goto 500
+110 goto 200
+500 rturn
+200 rem ...loop body...</pre>
+
+<h3>Variables need exactly one hyphen (interpreter mode)</h3>
+<p>In interpreter mode, all variable names must contain exactly one hyphen. Plain names like <code>X</code> may not work, and names with two or more hyphens like <code>IC-LEFT-RAW</code> silently evaluate to 0. In compiled mode (RUN button), plain names work fine.</p>
+<pre>rem WRONG — no hyphen:
+10 asign X = 5
+
+rem WRONG — two hyphens, evaluates to 0:
+10 asign IC-LEFT-RAW = 7
+
+rem RIGHT — exactly one hyphen:
+10 asign X-V = 5
+20 asign IC-LRAW = 7</pre>
+
+<h3>Line numbers sort numerically</h3>
+<p>Lines execute in numeric order regardless of where you write them. <code>8005</code> sorts after <code>829</code> — it does NOT go between <code>800</code> and <code>810</code>. Space lines by 50s to leave room for insertions.</p>
+<pre>rem These execute as: 50, 100, 150, 200 — not in written order
+200 print "last"
+50  print "first"
+150 print "third"
+100 print "second"</pre>
+
+<hr>
+<h2 id="bootstrap">BOOTSTRAP / SELF-HOSTING</h2>
+<p>Bootstrap means writing Spark in Spark. The goal: an interpreter for Spark, written entirely in Spark itself. This is how programming languages prove they work — when a language can run its own source code, it has reached self-hosting.</p>
+<p>In practice this means writing a tokenizer, line parser, variable store, statement executor, and main loop all in Spark — using only the primitives Spark itself provides (STRING package, ASIGN, IF, GOTO, CALSB). The result is a second Spark interpreter living inside the first one, able to run Spark programs as data.</p>
+<p>The multi-window architecture is used here deliberately — each component of the interpreter lives in its own window with clean line numbers, and they call each other with <code>CALSB 100-WINDOWNAME</code>.</p>
+
+<h3>Why it matters</h3>
+<p>Self-hosting is the foundation for a compiler. Once Spark can interpret Spark, the next step is to make it <em>compile</em> Spark — transforming Spark source into faster native Spark code or JavaScript. The bootstrap examples in the EX menu show each stage of this process.</p>
+
+<h3>Architecture</h3>
+<table>
+<tr><th>WINDOW</th><th>ROLE</th></tr>
+<tr><td>MAIN</td><td>Loads the program to interpret into ML-PROG and calls LOOP</td></tr>
+<tr><td>LOOP</td><td>Main fetch/decode/execute cycle — gets each line, calls LPARSE then EXEC</td></tr>
+<tr><td>EXEC</td><td>Statement executor — handles ASIGN, PRINT, END, GOTO, CALSB, RTURN, IF</td></tr>
+<tr><td>VSTORE</td><td>Variable store — SET at line 100, GET at line 400</td></tr>
+<tr><td>LPARSE</td><td>Line parser — splits a line string into LP-NUM, LP-KEY, LP-REST</td></tr>
+</table>
+
+<h3>The interpreted program</h3>
+<p>Programs run by the bootstrap interpreter are stored as pipe-delimited strings in <code>ML-PROG</code>. Each segment is one line. The loop fetches them by index, LPARSE splits them, EXEC runs them.</p>
+<pre>10 imprt string
+20 asign ML-PROG = "10 asign X-V = 3|20 print X-V|30 end"
+30 calsb 100-LOOP
+40 end</pre>
+
+<h3>Calling across windows</h3>
+<pre>rem LOOP calls LPARSE to parse a fetched line:
+280 calsb 100-LPARSE
+
+rem EXEC calls VSTORE to read a variable:
+370 calsb 400-VSTORE
+
+rem EXEC calls VSTORE to write a variable:
+377 calsb 100-VSTORE
+
+rem EXEC calls itself for GOTO/CALSB line search:
+610 calsb 900-EXEC</pre>
+
+<h3>Spark can edit Spark</h3>
+<p>Beyond self-hosting, Spark programs can directly read and modify the Spark editor itself at runtime. This is a separate capability — not just interpreting Spark as data, but reaching into the live editor and changing code, windows, and state.</p>
+<p>This is possible through two packages:</p>
+<ul>
+<li><strong>UPDATE</strong> — fetch a new version of Spark from a URL and hot-swap it into the running editor. A Spark program can update the language it is running in.</li>
+<li><strong>SYS</strong> — read and write the contents of editor windows at runtime. A program can inspect its own source code, generate new code and write it into a window, or modify another window's program while running.</li>
+</ul>
+<p>Combined with the bootstrap interpreter, this means a Spark program can: generate Spark source code, write it into a window using SYS, and then run it — a full code generation and execution pipeline entirely within Spark.</p>
+<pre>rem generate code and write it into a window at runtime:
+10 imprt sys
+20 asign CODE-SYS = "10 print hello from generated code"
+30 asign WIN-SYS = GENERATED
+40 calsb SET-SYS
+rem now run it:
+50 calsb 10-GENERATED</pre>
+
+<h3>Current status</h3>
+<p>The bootstrap interpreter currently supports: ASIGN (with + expressions), PRINT, END, GOTO, CALSB, RTURN, and IF with all 6 comparison operators. Missing: -, *, / in expressions, WHILE loops, and the IMPRT bridge (letting interpreted programs call packages). See the TODO for the roadmap.</p>
+
+
+<hr>
+
+<!-- ═══ INDEX ═══ -->
+<h2 id="index">FUNCTION INDEX</h2>
+<p>All package functions, alphabetically. Click to jump to the package section.</p>
+<table>
+<tr><th>FUNCTION</th><th>PACKAGE</th></tr>
+  <tr><td><a href="#date">ADD-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#matrix">ADD-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#color">ALPHA-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#template">APPEND-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#array">ARR-ARRAY</a></td><td>ARRAY</td></tr>
+  <tr><td><a href="#serial">AVAIL-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#crypto">B64DEC-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#crypto">B64ENC-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#history">BACK-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#serial">BAUD-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#dom">BG-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#fetch">BODY-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#dom">BORDER-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#sheet-new">BORDER-SHEET</a></td><td>SHEET — New Functions (v1.1)</td></tr>
+  <tr><td><a href="#update">BUILD-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#raycast">CANG-RAYCAST</a></td><td>RAYCAST</td></tr>
+  <tr><td><a href="#midi">CC-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#sprite">CHAR-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#camera">CHECK-CAMERA</a></td><td>CAMERA</td></tr>
+  <tr><td><a href="#clipboard">CHECK-CLIPBOARD</a></td><td>CLIPBOARD</td></tr>
+  <tr><td><a href="#geoloc">CHECK-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#midi">CHECK-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#notify">CHECK-NOTIFY</a></td><td>NOTIFY</td></tr>
+  <tr><td><a href="#socket">CHECK-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#template">CLEAR-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#socket">CLOSE-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#history">CLR-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#emul">CMD-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#spark">CODE-SPARK</a></td><td>EVAL-Spark / COMPILE-Spark</td></tr>
+  <tr><td><a href="#dom">COLOR-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#matrix">COLS-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#sheet-new">COLW-SHEET</a></td><td>SHEET — New Functions (v1.1)</td></tr>
+  <tr><td><a href="#update">CUR-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#color">DARKEN-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#file">DATA-FILE</a></td><td>FILE</td></tr>
+  <tr><td><a href="#history">DATA-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#serial">DATA-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#template">DATA-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#date">DAY-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#json">DECODE-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#timer">DELTA-TIMER</a></td><td>TIMER</td></tr>
+  <tr><td><a href="#date">DIFF-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#geoloc">DIST-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#sound">DUR-SOUND</a></td><td>SOUND</td></tr>
+  <tr><td><a href="#sheet-new">EDIT-SHEET</a></td><td>SHEET — New Functions (v1.1)</td></tr>
+  <tr><td><a href="#json">ENCODE-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#camera">ERR-CAMERA</a></td><td>CAMERA</td></tr>
+  <tr><td><a href="#clipboard">ERR-CLIPBOARD</a></td><td>CLIPBOARD</td></tr>
+  <tr><td><a href="#compress">ERR-COMPRESS</a></td><td>COMPRESS</td></tr>
+  <tr><td><a href="#emul">ERR-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#fetch">ERR-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#matrix">ERR-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">ERR-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#midi">ERR-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#midi">ERR-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#midi">ERR-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#notify">ERR-NOTIFY</a></td><td>NOTIFY</td></tr>
+  <tr><td><a href="#serial">ERR-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#socket">ERR-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#socket">ERR-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#socket">ERR-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#spark">ERR-SPARK</a></td><td>EVAL-Spark / COMPILE-Spark</td></tr>
+  <tr><td><a href="#threed">ERR-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#update">ERR-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#regex">FIND-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#string">FIND-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#dom">FLOW-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#date">FORMAT-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#raycast">FOV-RAYCAST</a></td><td>RAYCAST</td></tr>
+  <tr><td><a href="#threed">FOV-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#sound">FREQ-SOUND</a></td><td>SOUND</td></tr>
+  <tr><td><a href="#geoloc">GET-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#json">GET-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#matrix">GET-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#template">GET-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#crypto">HASH-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#color">HEX-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#date">HOUR-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#color">HSL-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#dom">HTML-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#update">HTML-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#dom">ID-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#matrix">ID-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">ID-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">ID-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#socket">ID-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#socket">ID-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#socket">ID-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#threed">ID-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#array">IDX-ARRAY</a></td><td>ARRAY</td></tr>
+  <tr><td><a href="#sprite">IDX-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#ui">IDX-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#sprite">IMG-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#emul">INFO-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#midi">INIT-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#convert">INPUT-CONVERT</a></td><td>CONVERT</td></tr>
+  <tr><td><a href="#crypto">INPUT-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#crypto">INPUT-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#crypto">INPUT-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#crypto">INPUT-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#date">INPUT-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#math">INPUT-MATH</a></td><td>MATH</td></tr>
+  <tr><td><a href="#string">INPUT-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#fetch">KEY-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#input">KEY-INPUT</a></td><td>INPUT</td></tr>
+  <tr><td><a href="#store">KEY-STORE</a></td><td>STORE</td></tr>
+  <tr><td><a href="#input">KEYD-INPUT</a></td><td>INPUT</td></tr>
+  <tr><td><a href="#json">KEYS-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#ui">LBL-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#history">LEN-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#json">LEN-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#string">LEN-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#template">LEN-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#color">LIGHTEN-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#template">LIST-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#raycast">MAP-RAYCAST</a></td><td>RAYCAST</td></tr>
+  <tr><td><a href="#regex">MATCH-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#regex">MATCHN-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#crypto">MD5-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#file">MIME-FILE</a></td><td>FILE</td></tr>
+  <tr><td><a href="#date">MINUTE-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#color">MIX-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#sprite">MODE-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#date">MONTH-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#serial">MSG-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#matrix">MUL-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#string">N-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#file">NAME-FILE</a></td><td>FILE</td></tr>
+  <tr><td><a href="#image">NAME-IMAGE</a></td><td>IMAGE</td></tr>
+  <tr><td><a href="#template">NAME-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#matrix">NEW-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#midi">NOTE-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#date">NOW-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#socket">OPEN-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#midi">OUTPUTS-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#dom">PAD-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#date">PARSE-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#json">PARSE-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#history">PEEK-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#history">POP-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#history">PUSH-HISTORY</a></td><td>HISTORY</td></tr>
+  <tr><td><a href="#graph">R-GRAPH</a></td><td>GRAPH</td></tr>
+  <tr><td><a href="#threed">RAD-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#dom">RADIUS-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#color">RAND-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#crypto">RAND-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#crypto">RANDINT-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#emul">RAW-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#clipboard">READ-CLIPBOARD</a></td><td>CLIPBOARD</td></tr>
+  <tr><td><a href="#geoloc">READ-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#emul">READY-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#socket">RECV-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#update">REMOTE-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#regex">REPLACE-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#notify">REQUEST-NOTIFY</a></td><td>NOTIFY</td></tr>
+  <tr><td><a href="#array">RESULT-ARRAY</a></td><td>ARRAY</td></tr>
+  <tr><td><a href="#color">RESULT-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#color">RESULT-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#color">RESULT-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#compress">RESULT-COMPRESS</a></td><td>COMPRESS</td></tr>
+  <tr><td><a href="#convert">RESULT-CONVERT</a></td><td>CONVERT</td></tr>
+  <tr><td><a href="#date">RESULT-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#date">RESULT-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#date">RESULT-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#dom">RESULT-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#emul">RESULT-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#fetch">RESULT-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#file">RESULT-FILE</a></td><td>FILE</td></tr>
+  <tr><td><a href="#image">RESULT-IMAGE</a></td><td>IMAGE</td></tr>
+  <tr><td><a href="#input">RESULT-INPUT</a></td><td>INPUT</td></tr>
+  <tr><td><a href="#json">RESULT-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#math">RESULT-MATH</a></td><td>MATH</td></tr>
+  <tr><td><a href="#matrix">RESULT-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">RESULT-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">RESULT-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#regex">RESULT-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#serial">RESULT-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#sheet">RESULT-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#spark">RESULT-SPARK</a></td><td>EVAL-Spark / COMPILE-Spark</td></tr>
+  <tr><td><a href="#sprite">RESULT-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#store">RESULT-STORE</a></td><td>STORE</td></tr>
+  <tr><td><a href="#string">RESULT-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#template">RESULT-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#threed">RESULT-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#time">RESULT-TIME</a></td><td>TIME</td></tr>
+  <tr><td><a href="#timer">RESULT-TIMER</a></td><td>TIMER</td></tr>
+  <tr><td><a href="#ui">RESULT-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#update">RESULT-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#color">RGB-COLOR</a></td><td>COLOR</td></tr>
+  <tr><td><a href="#sheet-new">ROWH-SHEET</a></td><td>SHEET — New Functions (v1.1)</td></tr>
+  <tr><td><a href="#matrix">ROWS-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#matrix">SCALE-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#dom">SCROLL-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#date">SECOND-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#sheet">SELX-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#sheet">SELX2-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#sheet">SELY-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#sheet">SELY2-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#midi">SEND-MIDI</a></td><td>MIDI</td></tr>
+  <tr><td><a href="#notify">SEND-NOTIFY</a></td><td>NOTIFY</td></tr>
+  <tr><td><a href="#socket">SEND-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#json">SET-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#matrix">SET-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#template">SET-TEMPLATE</a></td><td>TEMPLATE</td></tr>
+  <tr><td><a href="#raycast">SHADE-RAYCAST</a></td><td>RAYCAST</td></tr>
+  <tr><td><a href="#compress">SIZE-COMPRESS</a></td><td>COMPRESS</td></tr>
+  <tr><td><a href="#dom">SIZE-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#graph">SIZE-GRAPH</a></td><td>GRAPH</td></tr>
+  <tr><td><a href="#ui">SIZE-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#camera">SNAP-CAMERA</a></td><td>CAMERA</td></tr>
+  <tr><td><a href="#regex">SPLIT-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#image">SRC-IMAGE</a></td><td>IMAGE</td></tr>
+  <tr><td><a href="#camera">START-CAMERA</a></td><td>CAMERA</td></tr>
+  <tr><td><a href="#string">START-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#emul">STATUS-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#fetch">STATUS-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#serial">STATUS-SERIAL</a></td><td>SERIAL</td></tr>
+  <tr><td><a href="#socket">STATUS-SOCKET</a></td><td>SOCKET</td></tr>
+  <tr><td><a href="#camera">STOP-CAMERA</a></td><td>CAMERA</td></tr>
+  <tr><td><a href="#geoloc">STOP-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#compress">STR-COMPRESS</a></td><td>COMPRESS</td></tr>
+  <tr><td><a href="#json">STR-JSON</a></td><td>JSON</td></tr>
+  <tr><td><a href="#matrix">STR-MATRIX</a></td><td>MATRIX</td></tr>
+  <tr><td><a href="#ui">STY-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#dom">TAG-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#dom">TAPD-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#input">TAPD-INPUT</a></td><td>INPUT</td></tr>
+  <tr><td><a href="#dom">TAPID-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#input">TCHD-INPUT</a></td><td>INPUT</td></tr>
+  <tr><td><a href="#regex">TEST-REGEX</a></td><td>REGEX</td></tr>
+  <tr><td><a href="#clipboard">TEXT-CLIPBOARD</a></td><td>CLIPBOARD</td></tr>
+  <tr><td><a href="#date">TS-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#dom">TXT-DOM</a></td><td>DOM</td></tr>
+  <tr><td><a href="#graph">TXT-GRAPH</a></td><td>GRAPH</td></tr>
+  <tr><td><a href="#threed">TYP-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#ui">TYP-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#fetch">TYPE-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#fetch">URL-FETCH</a></td><td>FETCH</td></tr>
+  <tr><td><a href="#update">URL-UPDATE</a></td><td>UPDATE</td></tr>
+  <tr><td><a href="#crypto">UUID-CRYPTO</a></td><td>CRYPTO</td></tr>
+  <tr><td><a href="#array">VAL-ARRAY</a></td><td>ARRAY</td></tr>
+  <tr><td><a href="#sheet">VAL-SHEET</a></td><td>SHEET</td></tr>
+  <tr><td><a href="#store">VAL-STORE</a></td><td>STORE</td></tr>
+  <tr><td><a href="#ui">VAL-UI</a></td><td>UI</td></tr>
+  <tr><td><a href="#sprite">VIS-SPRITE</a></td><td>SPRITE</td></tr>
+  <tr><td><a href="#sound">VOL-SOUND</a></td><td>SOUND</td></tr>
+  <tr><td><a href="#threed">VOL-THREED</a></td><td>THREED</td></tr>
+  <tr><td><a href="#emul">WAIT-EMUL</a></td><td>EMUL</td></tr>
+  <tr><td><a href="#geoloc">WATCH-GEOLOC</a></td><td>GEOLOC</td></tr>
+  <tr><td><a href="#sound">WAVE-SOUND</a></td><td>SOUND</td></tr>
+  <tr><td><a href="#date">WEEKDAY-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#string">WITH-STRING</a></td><td>STRING</td></tr>
+  <tr><td><a href="#clipboard">WRITE-CLIPBOARD</a></td><td>CLIPBOARD</td></tr>
+  <tr><td><a href="#date">YEAR-DATE</a></td><td>DATE</td></tr>
+  <tr><td><a href="#dom">Z-DOM</a></td><td>DOM</td></tr>
+</table>
+<hr>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('#toc a');
+const headings = document.querySelectorAll('h1[id],h2[id]');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector('#toc a[href="#'+e.target.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+},{threshold:0.4});
+headings.forEach(h=>obs.observe(h));
+
+// Syntax highlight all <pre> blocks
+const KW = /\b(IMPRT|ASIGN|PRINT|CALSB|GOTO|GOWIN|IF|THEN|ELSE|STRLP|NDLP|RTURN|END|BREAK|WAIT|REM|AND|OR|NOT|STEP|TO)\b/gi;
+document.querySelectorAll('pre').forEach(pre=>{
+  let t = pre.textContent;
+  // escape HTML first
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // strings first — before any spans are added so quotes don't get confused
+  // use placeholder to protect string contents from keyword pass
+  const strs=[];
+  t = t.replace(/&quot;([^&]*)&quot;/g, (_,s)=>{
+    // textContent uses actual " not &quot; so handle both
+    return `\x00STR${strs.push(`<span style="color:#ffd080">"${s}"</span>`)-1}\x00`;
+  });
+  t = t.replace(/"([^"]*)"/g, (_,s)=>{
+    return `\x00STR${strs.push(`<span style="color:#ffd080">"${s}"</span>`)-1}\x00`;
+  });
+  // line numbers
+  t = t.replace(/^(\d+)(\s)/gm,'<span style="color:#00ff4155">$1</span>$2');
+  // keywords
+  t = t.replace(KW, m=>`<span style="color:#6c8cff">${m}</span>`);
+  // rem comments — dim everything after REM on the same line
+  t = t.replace(/(<span style="color:#6c8cff">REM<\/span>)([^\n]*)/g,
+    (_,kw,rest)=>`${kw}<span style="color:#00ff4144">${rest}</span>`);
+  // restore strings
+  t = t.replace(/\x00STR(\d+)\x00/g, (_,i)=>strs[+i]);
+  pre.innerHTML = t;
+});
+</script>
+
+<hr>
+<h2 class="pkg" id="sheet-new">SHEET — New Functions (v1.1)</h2>
+<p>Added in v1.1: inline cell editing, border toggling, column width and row height control.</p>
+
+<h3>New Functions</h3>
+<table>
+<tr><th>FUNCTION</th><th>PURPOSE</th></tr>
+<tr><td>EDIT-SHEET</td><td>Open inline text input in selected cell. Commit with Enter/Tab, cancel with Escape.</td></tr>
+<tr><td>BORDER-SHEET</td><td>Toggle thick border on selected cell(s). Set VAL-SHEET=1 for on, 0 for off.</td></tr>
+<tr><td>COLW-SHEET</td><td>Set column width in px. Uses SELX-SHEET for column, VAL-SHEET for width.</td></tr>
+<tr><td>ROWH-SHEET</td><td>Set row height in px. Uses SELY-SHEET for row, VAL-SHEET for height.</td></tr>
+</table>
+
+<h3>Double-click to edit</h3>
+<p>The grid now supports double-click (or double-tap on mobile) to open an inline editor in any cell. Tab moves right, Enter moves down, Escape cancels.</p>
+
+<h3>Column resize</h3>
+<p>Drag the right edge of any column header to resize it with the mouse. Works live.</p>
+
+<h3>Example — borders and sizing</h3>
+<pre>10 IMPRT SHEET
+20 CALSB INIT-SHEET
+30 REM select A1:C1 and add borders
+40 ASIGN SELX-SHEET = 0
+50 ASIGN SELY-SHEET = 0
+60 ASIGN SELX2-SHEET = 2
+70 ASIGN SELY2-SHEET = 0
+80 ASIGN VAL-SHEET = 1
+90 CALSB BORDER-SHEET
+100 REM widen column A
+110 ASIGN SELX-SHEET = 0
+120 ASIGN VAL-SHEET = 120
+130 CALSB COLW-SHEET
+140 CALSB TICK-SHEET
+150 GOTO 140</pre>
+
+<hr>
+<h2 class="pkg" id="bootstrap">BOOTSTRAP INTERPRETER</h2>
+<p>Spark includes a self-hosted interpreter written entirely in Spark. Load the <strong>Bootstrap: Multi-Window</strong> example to access it. The interpreter runs Spark programs stored as pipe-delimited strings in the <code>ML-PROG</code> variable.</p>
+
+<h3>Architecture</h3>
+<table>
+<tr><th>WINDOW</th><th>PURPOSE</th></tr>
+<tr><td>MAIN</td><td>Entry point. Sets ML-PROG and starts the interpreter loop.</td></tr>
+<tr><td>LPARSE</td><td>Line parser. Input: LP-IN (one line). Output: LP-NUM, LP-KEY, LP-REST.</td></tr>
+<tr><td>VSTORE</td><td>Variable store. Read/write interpreted program variables by name.</td></tr>
+<tr><td>EXEC</td><td>Statement executor. Dispatches on LP-KEY to handle each keyword.</td></tr>
+<tr><td>LOOP</td><td>Main interpreter loop. Walks ML-PROG line by line, calls LPARSE+EXEC.</td></tr>
+<tr><td>BRIDGE</td><td>Package bridge. Routes CALSB calls from interpreted programs to STRING/MATH/CONVERT.</td></tr>
+</table>
+
+<h3>ML-PROG format</h3>
+<p>Programs are stored as pipe-delimited lines in a single string:</p>
+<pre>ASIGN ML-PROG = "10 PRINT hello|20 ASIGN X = 5|30 PRINT X|40 END"</pre>
+<p>Each segment is one numbered Spark line. The interpreter parses and executes them in order, respecting GOTO, CALSB, RTURN, IF, and WHILE.</p>
+
+<h3>Supported keywords</h3>
+<p>ASIGN, PRINT, END, GOTO, IF/THEN, CALSB, RTURN, IMPRT — full expression evaluation including +, -, *, / with correct precedence.</p>
+
+<h3>Package bridge</h3>
+<p>Interpreted programs can call STRING, MATH, and CONVERT packages via the BRIDGE window. Set SE-BFUNC to the function name and SE-BINPUT/SE-BSTART/SE-BN/SE-BWITH to parameters, then CALSB 100-BRIDGE. Results come back in SE-BRSTR, SE-BRMTH, SE-BRCNV.</p>
+<p>In practice, just use IMPRT and CALSB normally — EXEC intercepts package calls and routes them automatically.</p>
+
+<hr>
+<h2 class="pkg" id="compiler">BOOTSTRAP COMPILER</h2>
+<p>Three Bootstrap windows that compile Spark source to JavaScript — written entirely in Spark itself. This is the proof-of-concept self-hosting compiler. The same logic is also implemented natively in Spark's <code>compileSpark()</code> function, which powers <code>CALSB COMPILE-Spark</code>, <code>⬇ APP</code>, and <code>⬇ SELF</code>.</p>
+
+<h3>Windows</h3>
+<table>
+<tr><th>WINDOW</th><th>PURPOSE</th></tr>
+<tr><td>XFRM</td><td>Expression transformer. Wraps hyphenated variable names in <code>v['...']</code> for JS output.</td></tr>
+<tr><td>CGEN</td><td>Code generator. Takes one parsed line (CG-NUM, CG-KEY, CG-REST) and emits one JS <code>case N:</code> statement.</td></tr>
+<tr><td>COMP</td><td>Compiler loop. Walks ML-PROG, calls LPARSE+CGEN per line, wraps result in JS switch/trampoline.</td></tr>
+</table>
+
+<h3>Output format</h3>
+<p>The compiled JS uses a switch/case trampoline pattern:</p>
+<pre>var v={},pc=10,halt=false,out=[];
+while(!halt){switch(pc){
+  case 10: v['X']=1; pc=20; break;
+  case 20: out.push(String(v['X'])); pc=30; break;
+  case 30: halt=true; break;
+}}</pre>
+
+<h3>Supported keywords</h3>
+<p>ASIGN, PRINT, END, GOTO, IF/THEN/ELSE (with GOTO, ASIGN, PRINT actions), STRLP/NDLP, BREAK, IMPRT, CALSB, RTURN, REM, LOCAL, ONERR, WAIT, SYNC. Expressions support MOD, AND, OR, NOT, string concatenation (+), inline functions (MID, CHAR, STRLEN, INDEXOF, ARR, INT, ABS).</p>
+
+<h3>Example</h3>
+<pre>10 IMPRT STRING
+20 IMPRT CONVERT
+30 ASIGN ML-PROG = "10 ASIGN X = 1|20 PRINT X|30 ASIGN X = X + 1|40 IF X <= 5 THEN GOTO 20|50 END"
+40 CALSB 100-COMP
+50 PRINT CO-OUT
+60 END</pre>
+<p>CO-OUT will contain the complete JS switch/trampoline string.</p>
+
+<div class="note">The native <code>CALSB COMPILE-Spark</code> is the recommended path for most uses — it supports all keywords, multi-window programs, subroutines, and produces cleaner output. The Bootstrap COMP/CGEN/XFRM windows exist as a demonstration that Spark can compile Spark.</div>
+</main>
+</body>
+</html>
