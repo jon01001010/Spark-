@@ -1,3 +1,7 @@
+
+*iphone users need a browser other than Safari*
+
+
 Spark-
 A mobile-first programming language that compiles to standalone HTML. BASIC-inspired syntax, Java-scale packages — graphics, 3D, AI, sensors, charts, and 63 more. One file. Zero dependencies.
 
