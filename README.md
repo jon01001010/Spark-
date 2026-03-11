@@ -1,5 +1,5 @@
 
-*iphone users need a browser other than Safari*
+
 
 
 Spark-
